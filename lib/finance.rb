@@ -1,4 +1,16 @@
+# The *Finance* module adheres to the following conventions for
+# financial calculations:
+#
+#  * Positive values represent cash inflows (money received); negative
+#    values represent cash outflows (payments).
+#  * *principal* represents the outstanding balance of a loan or annuity.
+#  * *rate* represents the interest rate _per period_.
 module Finance
+
+	# Return the internal rate of return for a given sequence of cashflows.
+	#
+	# References:
+	#  * http://en.wikipedia.org/wiki/Internal_rate_of_return
 	def Finance.irr(cashflows, iterations=100)
 		rate = 1.0
 		investment = cashflows[0]
@@ -51,11 +63,20 @@ module Finance
 		payments
 	end
 
+  # Return the periodic payment due on a loan, based on the amortization
+  # process.
+	#
+	# References:
+	#  * http://en.wikipedia.org/wiki/Amortization_calculator
 	def Finance.pmt(principal, rate, periods)
-		# See http://en.wikipedia.org/wiki/Amortization_calculator
 		principal * (rate + (rate / ((1 + rate) ** periods - 1)))
 	end
 
+	# Return the net present value of a sequence of cash flows given
+	# the discount rate _rate_.
+	#
+	# References:
+	#  * http://en.wikipedia.org/wiki/Net_present_value
 	def Finance.npv(rate, cashflows)
 		total = 0.0
 		cashflows.each_with_index do |cashflow, index|
@@ -64,6 +85,8 @@ module Finance
 		total
 	end
 
+	# Return the number of periods needed to pay off a loan with the
+	# given payment.
 	def Finance.nper(payment, rate, principal)
 		-(Math.log(1-((principal/payment)*rate))) / Math.log(1+rate)
 	end

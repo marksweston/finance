@@ -1,3 +1,27 @@
+= ABOUT
+
+The goal of the finance library is to provide Ruby implementations
+of common financial formulas, with a function syntax similar to most
+modern spreadsheet programs.  As the project matures, consideration will
+also be given to providing useful, but more advanced functions, which
+may not be suitable for a spreadsheet environment but are useful when
+programming.
+
+I began developing finance while writing a Ruby script for analyzing
+mortgages.  I couldn't find an existing resource for these tools, I am
+hoping to save other folks some time by releasing what I have as a gem.
+
+= EXAMPLES
+
+
+= INSTALL
+
++$ sudo gem install finance+
+
+= RESOURCES
+
+
+
 = COPYRIGHT
 
 This library is released under the terms of the LGPL license.
@@ -5,15 +29,15 @@ This library is released under the terms of the LGPL license.
 Copyright (c) 2011, William Kranec.
 All rights reserved.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see <http://www.gnu.org/licenses/>.
