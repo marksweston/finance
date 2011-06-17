@@ -7,19 +7,6 @@
 #  * *rate* represents the interest rate _per period_.
 module Finance
 
-	# Return the internal rate of return for a given sequence of cashflows.
-	#
-	# References:
-	#  * http://en.wikipedia.org/wiki/Internal_rate_of_return
-	def Finance.irr(cashflows, iterations=100)
-		rate = 1.0
-		investment = cashflows[0]
-		for i in 1..iterations+1
-			rate = rate * (1 - npv(rate, cashflows) / investment)
-		end
-		rate
-	end
-
 	def Finance.payments(principal, rates)
 		p_total = rates.inject(0) { |sum, n| sum + n[0] }
 		p_current = 0
@@ -70,19 +57,6 @@ module Finance
 	#  * http://en.wikipedia.org/wiki/Amortization_calculator
 	def Finance.pmt(principal, rate, periods)
 		principal * (rate + (rate / ((1 + rate) ** periods - 1)))
-	end
-
-	# Return the net present value of a sequence of cash flows given
-	# the discount rate _rate_.
-	#
-	# References:
-	#  * http://en.wikipedia.org/wiki/Net_present_value
-	def Finance.npv(rate, cashflows)
-		total = 0.0
-		cashflows.each_with_index do |cashflow, index|
-			total = total + cashflow / (1+rate) ** index
-		end
-		total
 	end
 
 	# Return the number of periods needed to pay off a loan with the
