@@ -59,4 +59,8 @@ class Rate
 		elsif opts.has_key? :nominal: @nominal = decimal(opts[:nominal])
 		end
 	end
+
+	def monthly
+		self.effective / 12
+	end
 end
