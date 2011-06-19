@@ -17,14 +17,14 @@ hoping to save other folks some time by releasing what I have as a gem.
 
 = INSTALL
 
-+ $ sudo gem install finance +
++$ sudo gem install finance+
 
 = RESOURCES
 
 Source code and bug tracking is available via github:
 
-Project Page:: + http://github.com/wkranec/finance +
-Repository:: + git://github.com/wkranec/finance.git +
+Project Page:: +http://github.com/wkranec/finance+
+Repository:: +git://github.com/wkranec/finance.git+
 
 = COPYRIGHT
 

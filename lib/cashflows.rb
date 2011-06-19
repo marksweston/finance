@@ -1,8 +1,6 @@
 module Cashflow
-	# Return the internal rate of return for a given sequence of cashflows.
-	#
-	# References:
-	#  * http://en.wikipedia.org/wiki/Internal_rate_of_return
+	# Return the {http://en.wikipedia.org/wiki/Internal_rate_of_return
+	# internal rate of return} for a given sequence of cashflows.
 	def irr(iterations=100)
 		rate = 1.0
 		investment = self[0]
@@ -12,11 +10,8 @@ module Cashflow
 		rate
 	end
 
-	# Return the net present value of a sequence of cash flows given
+	# Return the {http://en.wikipedia.org/wiki/Net_present_value net present value} of a sequence of cash flows given
 	# the discount rate _rate_.
-	#
-	# References:
-	#  * http://en.wikipedia.org/wiki/Net_present_value
 	def npv(rate)
 		total = 0.0
 		self.each_with_index do |cashflow, index|
