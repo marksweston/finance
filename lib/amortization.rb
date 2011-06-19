@@ -5,6 +5,7 @@ class Period
 	attr_accessor :principal
 	attr_accessor :rate
 
+	# Return the remaining balance at the end of the period.
 	def balance
 		@principal + @payment + self.interest
 	end
@@ -15,6 +16,7 @@ class Period
 		@payment = payment
 	end
 
+	# Return the interest charged for the period.
 	def interest
 		(@principal * @rate).round(2)
 	end
@@ -61,6 +63,11 @@ class Amortization
 		@periods.collect { |period| period.interest }
 	end
 
+	=begin rdoc
+  Return the periodic payment due on a loan, based on the
+  {http://en.wikipedia.org/wiki/Amortization_calculator amortization
+  process}.
+	=end
 	def Amortization.payment(balance, rate, periods)
 		-(balance * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
 	end
