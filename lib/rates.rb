@@ -61,6 +61,6 @@ class Rate
 	end
 
 	def monthly
-		self.effective / 12
+		(self.effective / 12).round(6)
 	end
 end

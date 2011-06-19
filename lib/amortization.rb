@@ -1,19 +1,49 @@
 require 'cashflows'
 
+class Period
+	attr_accessor :payment
+	attr_accessor :principal
+	attr_accessor :rate
+
+	def balance
+		@principal + @payment + self.interest
+	end
+
+	def initialize(principal, rate, payment)
+		@principal = principal
+		@rate = rate
+		@payment = payment
+	end
+
+	def interest
+		(@principal * @rate).round(2)
+	end
+end
+
 class Amortization
 	attr_accessor :balance
-	attr_accessor :rate
+	attr_accessor :duration
 	attr_accessor :payment
-	attr_accessor :payments
 	attr_accessor :periods
 	attr_accessor :principal
+	attr_accessor :rate
 
 	def compute(balance, rate)
-		@payment = Amortization.payment balance, rate.monthly, rate.duration
+		duration = @duration - @periods.length
+		@payment = Amortization.payment balance, rate.monthly, duration
 
 		rate.duration.times do
-			@payments << @payment
-			@balance += (@balance * rate.monthly.round(6)).round(2) + @payment
+			if @payment > @balance
+				@payment = @balance
+			end
+
+			period = Period.new(@balance, rate.monthly, @payment)
+			@periods << period
+			@balance = period.balance
+
+			if @balance.zero?
+				break
+			end
 		end
 	end
 
@@ -21,12 +51,31 @@ class Amortization
 		@principal = principal
 		@balance   = principal
 		@rate      = rate
-		@payments  = []
+		@duration  = rate.duration
+		@periods   = []
 
 		compute(@balance, @rate)
 	end
 
+	def interest
+		@periods.collect { |period| period.interest }
+	end
+
 	def Amortization.payment(balance, rate, periods)
 		-(balance * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
+	end
+
+	def payments
+		@periods.collect { |period| period.payment }
+	end
+
+	def periods
+		@periods
+	end
+end
+
+class Numeric
+	def amortize(rate)
+		Amortization.new(self, rate)
 	end
 end
