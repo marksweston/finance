@@ -1,3 +1,8 @@
+require 'amortization'
+require 'cashflow'
+require 'rates'
+require 'time'
+
 # The *Finance* module adheres to the following conventions for
 # financial calculations:
 #
@@ -48,15 +53,6 @@ module Finance
 		end
 
 		payments
-	end
-
-  # Return the periodic payment due on a loan, based on the amortization
-  # process.
-	#
-	# References:
-	#  * http://en.wikipedia.org/wiki/Amortization_calculator
-	def Finance.pmt(principal, rate, periods)
-		principal * (rate + (rate / ((1 + rate) ** periods - 1)))
 	end
 
 	# Return the number of periods needed to pay off a loan with the

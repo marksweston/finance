@@ -63,11 +63,8 @@ class Amortization
 		@periods.collect { |period| period.interest }
 	end
 
-	=begin rdoc
-  Return the periodic payment due on a loan, based on the
-  {http://en.wikipedia.org/wiki/Amortization_calculator amortization
-  process}.
-	=end
+  # Return the periodic payment due on a loan, based on the
+  #{http://en.wikipedia.org/wiki/Amortization_calculator amortization process}.
 	def Amortization.payment(balance, rate, periods)
 		-(balance * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
 	end

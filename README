@@ -1,19 +1,13 @@
-= ABOUT
+*finance* - a library for financial calculations in Ruby.
 
-The goal of the _finance_ library is to provide Ruby implementations
-of common financial formulas, with a function syntax similar to most
-modern spreadsheet programs.  As the project matures, consideration will
-also be given to providing useful, but more advanced functions, which
-may not be suitable for a spreadsheet environment but are useful when
-programming.
+= OVERVIEW
+
+
+= ABOUT
 
 I began developing _finance_ while writing a Ruby script for analyzing
 mortgages.  I couldn't find an existing resource for these tools, I am
 hoping to save other folks some time by releasing what I have as a gem.
-
-= EXAMPLES
-
-
 
 = INSTALL
 
