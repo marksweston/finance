@@ -1,5 +1,5 @@
+require 'finance'
 require 'test/unit'
-require 'time'
 
 class TestTime < Test::Unit::TestCase
 	def test_months
