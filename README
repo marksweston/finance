@@ -1,17 +1,49 @@
 *finance* - a library for financial calculations in Ruby.
 
+= INSTALL
+
+	$ sudo gem install finance
+
 = OVERVIEW
 
+== GETTING STARTED
+
+	>> require 'finance'
+
+== AMORTIZATION
+
+You are interested in borrowing $250,000 under a 30 year, fixed-rate loan with a 4.25% APR.
+
+	>> rate = Rate.new :apr => 0.0425, :duration => 30.years
+	>> amortization = 250000.amortize(rate)
+
+Find the standard monthly payment:
+
+	>> amortization.payment
+	=> DecNum('-1229.91')
+
+Find the total cost of the loan:
+
+	>> amortization.payments.sum
+	=> DecNum('-442766.55')
+
+How much will you pay in interest?
+
+	>> amortization.interest.sum
+	=> DecNum('192766.55')
+
+How much interest in the first six months?
+
+	>> amortization.interest[0,6].sum
+	=> DecNum('5294.62')
 
 = ABOUT
 
-I began developing _finance_ while writing a Ruby script for analyzing
+I began developing *finance* while writing a Ruby script for analyzing
 mortgages.  I couldn't find an existing resource for these tools, I am
 hoping to save other folks some time by releasing what I have as a gem.
 
-= INSTALL
-
-+$ sudo gem install finance+
+= FEATURES
 
 = RESOURCES
 

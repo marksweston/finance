@@ -1,5 +1,5 @@
 lib/cashflows.rb e939613d7648986183b1d30fa2c946c5c4751b19
-lib/rates.rb 73652087cd6c6c80ff1b2ac2f016f60aa0e5f8b0
-lib/finance.rb 5f495e8107a3bccdf881eeb65be72fcbe3703347
-lib/time.rb b6fcecc7c570943e14a3f136186fe66ba606aaf2
-lib/amortization.rb 5e430f342f32abe7a43083f99c0f6a299131f26d
+lib/timespan.rb 6b5da54f93bbcbeba75e5928ea5f893192f2fc02
+lib/rates.rb 2fe1e573510be70472c576cc07603176bd7090f0
+lib/finance.rb 695e83a9aadedd0620c389d4f64c131030e33bb9
+lib/amortization.rb cb54b1ce5b40134bc9971ec26e88451b5894155d
