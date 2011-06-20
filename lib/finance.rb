@@ -1,5 +1,5 @@
 require 'amortization'
-require 'cashflow'
+require 'cashflows'
 require 'rates'
 require 'time'
 

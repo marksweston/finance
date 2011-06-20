@@ -57,6 +57,12 @@ class Amortization
 		@periods   = []
 
 		compute(@balance, @rate)
+
+		# Add any remaining balance due to rounding error to the last payment.
+		unless @balance.zero?
+			@periods[-1].payment -= @balance
+			@balance = 0
+		end
 	end
 
 	def interest
@@ -71,10 +77,6 @@ class Amortization
 
 	def payments
 		@periods.collect { |period| period.payment }
-	end
-
-	def periods
-		@periods
 	end
 end
 
