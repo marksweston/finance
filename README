@@ -2,40 +2,40 @@ _finance_ - a library for financial calculations in Ruby.
 
 = INSTALL
 
-	$ sudo gem install finance
+  $ sudo gem install finance
 
 = OVERVIEW
 
 == GETTING STARTED
 
-	>> require 'finance'
+  >> require 'finance'
 
 == AMORTIZATION
 
 You are interested in borrowing $250,000 under a 30 year, fixed-rate loan with a 4.25% APR.
 
-	>> rate = Rate.new(0.0425, :apr, :duration => 30.years)
-	>> amortization = 250000.amortize(rate)
+  >> rate = Rate.new(0.0425, :apr, :duration => 30.years)
+  >> amortization = 250000.amortize(rate)
 
 Find the standard monthly payment:
 
-	>> amortization.payment
-	=> DecNum('-1229.91')
+  >> amortization.payment
+  => DecNum('-1229.91')
 
 Find the total cost of the loan:
 
-	>> amortization.payments.sum
-	=> DecNum('-442766.55')
+  >> amortization.payments.sum
+  => DecNum('-442766.55')
 
 How much will you pay in interest?
 
-	>> amortization.interest.sum
-	=> DecNum('192766.55')
+  >> amortization.interest.sum
+  => DecNum('192766.55')
 
 How much interest in the first six months?
 
-	>> amortization.interest[0,6].sum
-	=> DecNum('5294.62')
+  >> amortization.interest[0,6].sum
+  => DecNum('5294.62')
 
 = ABOUT
 
@@ -57,18 +57,17 @@ Currently implemented features include:
 Planned features include:
 
 * Adjustable rate mortgage amortization.
-* Payment modifications (i.e., how does paying an additional $75 per
-month affect the amortization?)
+* Payment modifications (i.e., how does paying an additional $75 per month affect the amortization?)
 * Balloon payments.
 * Support for amortization methods other than 30/360.
 
 = RESOURCES
 
 This gem and related documentation is available through
-RubyGems[https://rubygems.org/gems/finance].
+{https://rubygems.org/gems/finance RubyGems}.
 
 Source code and bug tracking is available via
-github[http://github.com/wkranec/finance].
+{http://github.com/wkranec/finance github}.
 
 = COPYRIGHT
 
