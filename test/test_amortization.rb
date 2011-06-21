@@ -5,8 +5,7 @@ require 'test/unit'
 
 class TestBasicAmortization < Test::Unit::TestCase
 	def setup
-		@rate = Rate.new :effective => 0.0375
-		@rate.duration = 360
+		@rate = Rate.new(0.0375, :apr, :duration => 30.years)
 		@amortization = Amortization.new(D(200000), @rate)
 	end
 

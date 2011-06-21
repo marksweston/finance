@@ -65,6 +65,10 @@ class Amortization
 		end
 	end
 
+	def inspect
+		"Amortization.new(#{@principal}, #{@rate}"
+	end
+
 	def interest
 		@periods.collect { |period| period.interest }
 	end

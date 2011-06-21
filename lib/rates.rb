@@ -11,22 +11,20 @@ class Rate
 		self.effective = apr
 	end
 
+	def apr
+		self.effective
+	end
+
   # Alias method for *effective*.
 	def apy=(apy)
 		self.effective = apy
 	end
 
-	def decimal(value)
-		unless value.class == Flt::DecNum
-			Flt::DecNum(value.to_s)
-		else
-			value
-		end
+	def apy
+		self.effective
 	end
 
 	def effective=(rate)
-		rate = decimal(rate)
-
 		unless @periods == Flt::DecNum.infinity
 			@nominal = @periods * ((1 + rate) ** (1 / @periods) - 1)
 		else
@@ -42,7 +40,13 @@ class Rate
 		end
 	end
 
-	def initialize(opts={})
+	def initialize(rate, type, opts={})
+		# Make sure the rate is a decimal.
+		unless rate.class == Flt::DecNum
+			rate = Flt::DecNum rate.to_s 
+		end
+
+		# Set the compounding interval.
 		compounding = opts.fetch(:compounds, :monthly)
 
 		translate = {
@@ -60,6 +64,14 @@ class Rate
 			@periods = Flt::DecNum compounding.to_s 
 		end
 
+		# Set the rate in the proper way, based on the value of :type:.
+		if %w{apr apy effective}.include? type.to_s
+			self.effective = rate
+		else
+			@nominal = rate
+		end
+
+		# Set the remainder of the attributes provided in :opts:.
 		opts.each do |key, value|
 			unless key == :compounds
 			  send("#{key}=", value)
@@ -67,11 +79,11 @@ class Rate
 		end
 	end
 
-	def monthly
-		(self.effective / 12).round(6)
+	def inspect
+		"Rate.new(#{self.apr.round(6)}, :apr)"
 	end
 
-	def nominal=(nominal)
-		@nominal = decimal(nominal)
+	def monthly
+		(self.effective / 12).round(6)
 	end
 end

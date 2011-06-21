@@ -14,7 +14,7 @@
 
 You are interested in borrowing $250,000 under a 30 year, fixed-rate loan with a 4.25% APR.
 
-	>> rate = Rate.new :apr => 0.0425, :duration => 30.years
+	>> rate = Rate.new(0.0425, :apr, :duration => 30.years)
 	>> amortization = 250000.amortize(rate)
 
 Find the standard monthly payment:
@@ -45,12 +45,27 @@ hoping to save other folks some time by releasing what I have as a gem.
 
 = FEATURES
 
+Currently implemented features include:
+
+* Fixed-rate mortgage amortization (30/360).
+* Interest rates
+* Various cash flow computations, such as NPV, IRR, and sum.
+
+Planned features include:
+
+* Adjustable rate mortgage amortization.
+* Payment modifications (i.e., how does paying an additional $75 per
+month affect the amortization?)
+* Balloon payments.
+* Support for amortization methods other than 30/360.
+
 = RESOURCES
 
-Source code and bug tracking is available via github:
+This gem and related documentation is available through
+RubyGems[https://rubygems.org/gems/finance].
 
-Project Page:: +http://github.com/wkranec/finance+
-Repository:: +git://github.com/wkranec/finance.git+
+Source code and bug tracking is available via
+github[http://github.com/wkranec/finance].
 
 = COPYRIGHT
 
