@@ -1,4 +1,4 @@
-*finance* - a library for financial calculations in Ruby.
+_finance_ - a library for financial calculations in Ruby.
 
 = INSTALL
 
@@ -39,9 +39,12 @@ How much interest in the first six months?
 
 = ABOUT
 
-I began developing *finance* while writing a Ruby script for analyzing
+I began developing _finance_ while writing a Ruby script for analyzing
 mortgages.  I couldn't find an existing resource for these tools, I am
 hoping to save other folks some time by releasing what I have as a gem.
+
+If you have used _finance_ and find it useful, I would enjoy hearing
+about it!
 
 = FEATURES
 
