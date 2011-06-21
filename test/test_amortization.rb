@@ -6,10 +6,11 @@ require 'test/unit'
 class TestBasicAmortization < Test::Unit::TestCase
 	def setup
 		@rate = Rate.new(0.0375, :apr, :duration => 30.years)
-		@amortization = Amortization.new(D(200000), @rate)
+    @principal = D(200000)
+		@amortization = Amortization.new(@principal, @rate)
 	end
 
-	def test_balance
+  def test_balance
 		assert_equal D(0), @amortization.balance
 	end
 
@@ -33,6 +34,33 @@ class TestBasicAmortization < Test::Unit::TestCase
 	end
 
 	def test_principal
-		assert_equal D(200000), @amortization.principal
+		assert_equal @principal, @amortization.principal
 	end
+
+  def test_sum
+    assert_equal D(0), @amortization.payments.sum + @amortization.interest.sum + @amortization.principal
+  end
+end
+
+class TestAdjustableAmortization < Test::Unit::TestCase
+	def setup
+		@rates = []
+		0.upto 10 do |adj|
+			@rates << Rate.new(0.0375 + (D('0.01') * adj), :apr, :duration => 3.years)
+		end
+    @principal = D(200000)
+		@amortization = Amortization.new(@principal, *@rates)
+  end
+
+  def test_balance
+		assert_equal D(0), @amortization.balance
+	end
+
+	def test_principal
+		assert_equal @principal, @amortization.principal
+	end
+
+  def test_sum
+    assert_equal D(0), @amortization.payments.sum + @amortization.interest.sum + @amortization.principal
+  end
 end
