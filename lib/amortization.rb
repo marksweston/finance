@@ -30,16 +30,25 @@ class Amortization
 	attr_accessor :principal
 	attr_accessor :rate
 
-	def compute(balance, rate)
+	def amortize(rate)
+    # For the purposes of calculating a payment, the relevant time
+    # period is the remaining number of periods in the loan, _not_ the
+    # duration of the rate itself.
 		duration = @duration - @periods.length
-		@payment = Amortization.payment balance, rate.monthly, duration
+		payment = Amortization.payment @balance, rate.monthly, duration
+
+    if @rates.length == 1
+      @payment = payment
+    else
+      @payment = nil
+    end
 
 		rate.duration.times do
-			if @payment > @balance
-				@payment = @balance
+			if payment > @balance
+				payment = @balance
 			end
 
-			period = Period.new(@balance, rate.monthly, @payment)
+			period = Period.new(@balance, rate.monthly, payment)
 			@periods << period
 			@balance = period.balance
 
@@ -49,26 +58,35 @@ class Amortization
 		end
 	end
 
-	def initialize(principal, rate)
-		@principal = principal
-		@balance   = principal
-		@rate      = rate
-		@duration  = rate.duration
-		@periods   = []
+  # Compute the amortization of the principal.
+  def compute
+		@balance = @principal
 
-		compute(@balance, @rate)
+    @rates.each do |rate|
+	    amortize(rate)
+    end
 
 		# Add any remaining balance due to rounding error to the last payment.
 		unless @balance.zero?
 			@periods[-1].payment -= @balance
 			@balance = 0
 		end
-	end
+  end
+
+	def initialize(principal, *rates)
+		@principal = principal
+		@rates     = rates
+		@duration  = (rates.collect { |r| r.duration }).sum
+		@periods   = []
+
+    compute
+  end
 
 	def inspect
-		"Amortization.new(#{@principal}, #{@rate}"
+		"Amortization.new(#{@principal}"
 	end
 
+  # Return an Array with the amount of interest charged in each period.
 	def interest
 		@periods.collect { |period| period.interest }
 	end
@@ -79,6 +97,7 @@ class Amortization
 		-(balance * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
 	end
 
+  # Return an array with the payment amount for each period.
 	def payments
 		@periods.collect { |period| period.payment }
 	end
