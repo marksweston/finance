@@ -4,6 +4,10 @@ require 'flt/d'
 require 'test/unit'
 
 class TestBasicAmortization < Test::Unit::TestCase
+  def interest_in_period(principal, rate, payment, period)
+    -(-rate*principal*(1+rate)**(period-1) - payment*((1+rate)**(period-1)-1)).round(2)
+  end
+
 	def setup
 		@rate = Rate.new(0.0375, :apr, :duration => 30.years)
     @principal = D(200000)
@@ -11,8 +15,18 @@ class TestBasicAmortization < Test::Unit::TestCase
 	end
 
   def test_balance
-		assert_equal D(0), @amortization.balance
+		assert @amortization.balance.zero?
 	end
+
+  def test_duration
+    assert_equal 360, @amortization.duration
+  end
+
+  def test_interest
+    0.upto 359 do |period|
+      assert_equal @amortization.interest[period], interest_in_period(@principal, @rate.monthly, @amortization.payment, period+1)
+    end
+  end
 
 	def test_interest_sum
 		assert_equal D('133443.53'), @amortization.interest.sum
@@ -45,7 +59,7 @@ end
 class TestAdjustableAmortization < Test::Unit::TestCase
 	def setup
 		@rates = []
-		0.upto 10 do |adj|
+		0.upto 9 do |adj|
 			@rates << Rate.new(0.0375 + (D('0.01') * adj), :apr, :duration => 3.years)
 		end
     @principal = D(200000)
@@ -53,8 +67,43 @@ class TestAdjustableAmortization < Test::Unit::TestCase
   end
 
   def test_balance
-		assert_equal D(0), @amortization.balance
+		assert @amortization.balance.zero?
 	end
+
+  def test_duration
+    assert_equal 360, @amortization.duration
+  end
+
+  def test_interest_sum
+    assert_equal D('277505.92'), @amortization.interest.sum
+  end
+
+  def test_payment
+    assert_nil @amortization.payment
+  end
+
+  def test_payments
+    values = %w{926.23 1033.73 1137.32 1235.39 1326.30 1408.27 1479.28 1537.03 1578.84 1601.66 1601.78}
+    values.collect!{ |v| -D(v) }
+    
+    payments = []
+    values[0,9].each do |v|
+      36.times do
+        payments << v
+      end
+    end
+
+    35.times { payments << values[9] }
+    payments << values[10]
+
+    payments.each_with_index do |payment, index|
+      assert_equal payment, @amortization.payments[index]
+    end
+  end
+
+  def test_payment_sum
+    assert_equal D('-477505.92'), @amortization.payments.sum
+  end
 
 	def test_principal
 		assert_equal @principal, @amortization.principal
