@@ -61,6 +61,7 @@ class Amortization
   # Compute the amortization of the principal.
   def compute
 		@balance = @principal
+		@periods = []
 
     @rates.each do |rate|
 	    amortize(rate)
@@ -77,7 +78,6 @@ class Amortization
 		@principal = principal
 		@rates     = rates
 		@duration  = (rates.collect { |r| r.duration }).sum
-		@periods   = []
 
     compute
   end
@@ -101,6 +101,13 @@ class Amortization
 	def payments
 		@periods.collect { |period| period.payment }
 	end
+
+  # "Pretty print" a text amortization table.
+  def pprint
+    @periods.each_with_index do |p, i|
+      puts "%03d  $%9s  %8s  $%7s  $%7s  $%9s" % [i, p.principal, p.rate, p.payment, p.interest, p.balance]
+    end
+  end
 end
 
 class Numeric
