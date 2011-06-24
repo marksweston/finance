@@ -118,22 +118,23 @@ class TestExtraPaymentAmortization < Test::Unit::TestCase
   def setup
     @rate = Rate.new(0.0375, :apr, :duration => 30.years)
     @principal = D(200000)
-    @amortization = Amortization.new(@principal, @rate){ |payment| payment + 100 }
+    @amortization = Amortization.new(@principal, @rate){ |period| period.payment - 100 }
   end
 
   def test_additional_payments_sum
-    assert_equal D('-30100'), @amortization.additional_payments.sum
+    assert_equal D('-30084.86'), @amortization.additional_payments.sum
+  end
   
   def test_balance
 		assert @amortization.balance.zero?
 	end
 
   def test_duration
-    assert_equal 302, @amortization.duration
+    assert_equal 301, @amortization.duration
   end
 
   def test_interest_sum
-    assert_equal D('108880.04'), @amortization.interest.sum
+    assert_equal D('108880.09'), @amortization.interest.sum
   end
 
   def test_payment
@@ -141,7 +142,7 @@ class TestExtraPaymentAmortization < Test::Unit::TestCase
   end
 
   def test_payment_sum
-    assert_equal D('-278780.04'), @amortization.payments.sum
+    assert_equal D('-308880.09'), @amortization.payments.sum
   end
 
 	def test_principal
@@ -151,5 +152,4 @@ class TestExtraPaymentAmortization < Test::Unit::TestCase
   def test_sum
     assert_equal D(0), @amortization.payments.sum + @amortization.interest.sum + @amortization.principal
   end
-
 end

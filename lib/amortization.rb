@@ -5,6 +5,10 @@ class Period
 	attr_accessor :principal
 	attr_accessor :rate
 
+  def additional_payment
+    @payment-@original_payment
+  end
+
 	# Return the remaining balance at the end of the period.
 	def balance
 		@principal + @payment + self.interest
@@ -13,28 +17,47 @@ class Period
 	def initialize(principal, rate, payment)
 		@principal = principal
 		@rate = rate
-		@payment = payment
+    @payment = payment
+    @original_payment = payment
 	end
 
 	# Return the interest charged for the period.
 	def interest
 		(@principal * @rate).round(2)
 	end
+
+  def modify_payment(&modifier)
+    self.payment = modifier.call(self)
+  end
+
+  def payment=(value)
+    total = @principal + self.interest
+    if value.abs > total
+      @payment = -total
+    else
+      @payment = value
+    end
+  end
 end
 
 class Amortization
 	attr_accessor :balance
-	attr_accessor :duration
+  attr_accessor :block
+	attr_accessor :rate_duration
 	attr_accessor :payment
 	attr_accessor :periods
 	attr_accessor :principal
 	attr_accessor :rate
 
+  def additional_payments
+    @periods.collect{ |period| period.additional_payment }
+  end
+
 	def amortize(rate)
     # For the purposes of calculating a payment, the relevant time
     # period is the remaining number of periods in the loan, _not_ the
     # duration of the rate itself.
-		duration = @duration - @periods.length
+		duration = @rate_duration - @periods.length
 		payment = Amortization.payment @balance, rate.monthly, duration
 
     if @rates.length == 1
@@ -44,17 +67,19 @@ class Amortization
     end
 
 		rate.duration.times do
-			if payment > @balance
-				payment = @balance
-			end
-
-			period = Period.new(@balance, rate.monthly, payment)
-			@periods << period
-			@balance = period.balance
-
+      # Do this first in case the balance is zero already.
 			if @balance.zero?
 				break
 			end
+
+      period = Period.new(@balance, rate.monthly, payment)
+
+      if @block
+		    period.modify_payment(&@block)
+      end
+			
+      @periods << period
+			@balance = period.balance
 		end
 	end
 
@@ -74,10 +99,15 @@ class Amortization
 		end
   end
 
-	def initialize(principal, *rates)
+  def duration
+    @periods.length
+  end
+
+	def initialize(principal, *rates, &block)
 		@principal = principal
 		@rates     = rates
-		@duration  = (rates.collect { |r| r.duration }).sum
+		@rate_duration  = (rates.collect { |r| r.duration }).sum
+    @block     = block
 
     compute
   end
@@ -111,7 +141,12 @@ class Amortization
 end
 
 class Numeric
-	def amortize(rate)
-		Amortization.new(self, rate)
+  # -- This doesn't work with the block.
+	def amortize(rate, &block)
+		amortization = Amortization.new(self, rate)
+    if block
+      amortization.block = block
+    end
+    amortization
 	end
 end
