@@ -12,52 +12,52 @@ require 'timespan'
 #  * *rate* represents the interest rate _per period_.
 module Finance
 
-	def Finance.payments(principal, rates)
-		p_total = rates.inject(0) { |sum, n| sum + n[0] }
-		p_current = 0
-		payments = []
+  def Finance.payments(principal, rates)
+    p_total = rates.inject(0) { |sum, n| sum + n[0] }
+    p_current = 0
+    payments = []
 
-		rates.each do |periods, rate|
-			payment = Finance.pmt(principal, rate, p_total-p_current)
+    rates.each do |periods, rate|
+      payment = Finance.pmt(principal, rate, p_total-p_current)
 
-			begin
-				payment = payment.round(2)
-			rescue ArgumentError
-				payment = (payment * 100.0).round / 100.0
-			end
+      begin
+        payment = payment.round(2)
+      rescue ArgumentError
+        payment = (payment * 100.0).round / 100.0
+      end
 
-			if block_given?
-				payment = yield(payment)
-			end
+      if block_given?
+        payment = yield(payment)
+      end
 
-			periods.times do
-				interest = principal * rate
+      periods.times do
+        interest = principal * rate
 
-				if payment > principal + interest
-					payment = principal + interest
-				end
+        if payment > principal + interest
+          payment = principal + interest
+        end
 
-				principal = principal + interest - payment
+        principal = principal + interest - payment
 
-				begin
-					principal = principal.round(2)
-				rescue ArgumentError
-					principal = (principal * 100.0).round / 100.0
-				end
+        begin
+          principal = principal.round(2)
+        rescue ArgumentError
+          principal = (principal * 100.0).round / 100.0
+        end
 
-				payments << payment
-				break if principal == 0
-				
-				p_current = p_current + 1
-			end
-		end
+        payments << payment
+        break if principal == 0
+        
+        p_current = p_current + 1
+      end
+    end
 
-		payments
-	end
+    payments
+  end
 
-	# Return the number of periods needed to pay off a loan with the
-	# given payment.
-	def Finance.nper(payment, rate, principal)
-		-(Math.log(1-((principal/payment)*rate))) / Math.log(1+rate)
-	end
+  # Return the number of periods needed to pay off a loan with the
+  # given payment.
+  def Finance.nper(payment, rate, principal)
+    -(Math.log(1-((principal/payment)*rate))) / Math.log(1+rate)
+  end
 end
