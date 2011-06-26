@@ -6,6 +6,10 @@ class Rate
 	attr_accessor :periods
 	attr_accessor :nominal
 
+  def ==(rate)
+    self.nominal == rate.nominal and self.periods == rate.periods
+  end
+
   # Alias method for *effective*.
 	def apr=(apr)
 		self.effective = apr

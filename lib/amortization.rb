@@ -47,7 +47,11 @@ class Amortization
 	attr_accessor :payment
 	attr_accessor :periods
 	attr_accessor :principal
-	attr_accessor :rate
+	attr_accessor :rates
+
+  def ==(amortization)
+    self.principal == amortization.principal and self.rates == amortization.rates and self.payments == amortization.payments
+  end
 
   def additional_payments
     @periods.collect{ |period| period.additional_payment }
@@ -141,12 +145,7 @@ class Amortization
 end
 
 class Numeric
-  # -- This doesn't work with the block.
 	def amortize(rate, &block)
-		amortization = Amortization.new(self, rate)
-    if block
-      amortization.block = block
-    end
-    amortization
+		amortization = Amortization.new(self, rate, &block)
 	end
 end

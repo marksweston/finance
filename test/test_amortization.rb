@@ -153,3 +153,19 @@ class TestExtraPaymentAmortization < Test::Unit::TestCase
     assert_equal D(0), @amortization.payments.sum + @amortization.interest.sum + @amortization.principal
   end
 end
+
+class TestNumericMethod < Test::Unit::TestCase
+  def test_simple
+    rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    amt_method = 300000.amortize(rate)
+    amt_class  = Amortization.new(300000, rate)
+    assert_equal amt_method, amt_class
+  end
+
+  def test_with_block
+    rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    amt_method = 300000.amortize(rate){ |period| period.payment-300 }
+    amt_class  = Amortization.new(300000, rate){ |period| period.payment-300 }
+    assert_equal amt_method, amt_class
+  end
+end
