@@ -12,7 +12,8 @@ _finance_ - a library for financial calculations in Ruby.
 
 == AMORTIZATION
 
-You are interested in borrowing $250,000 under a 30 year, fixed-rate loan with a 4.25% APR.
+You are interested in borrowing $250,000 under a 30 year, fixed-rate
+loan with a 4.25% APR.
 
   >> rate = Rate.new(0.0425, :apr, :duration => 30.years)
   >> amortization = 250000.amortize(rate)
@@ -37,11 +38,74 @@ How much interest in the first six months?
   >> amortization.interest[0,6].sum
   => DecNum('5294.62')
 
+If your loan has an adjustable rate, no problem.  You can pass an
+arbitrary number of rates, and they will be used in the amortization.
+For example, we can look at an amortization of $250000, where the APR
+starts at 4.25%, and increases by 1% every five years.
+
+  >> values = %w{ 0.0425 0.0525 0.0625 0.0725 0.0825 0.0925 }
+  >> rates = values.collect { |value| Rate.new( value, :apr, :duration = 5.years ) }
+  >> arm = Amortization.new(250000, *rates)
+
+Since we are looking at an ARM, there is no longer a single "payment" value.
+
+  >> arm.payment
+  => nil
+
+But we can look at the different payments over time.
+
+  >> arm.payments.uniq
+  => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), DecNum('-1641.34'), DecNum('-1680.27'), DecNum('-1680.32')]
+
+The other methods previously discussed can be accessed in the same way:
+
+  >> arm.interest.sum
+  => DecNum('287515.45')
+  >> arm.payments.sum
+  => DecNum('-537515.45')
+
+Last, but not least, you may pass a block when creating an Amortization
+which returns a modified monthly payment.  For example, to increase your
+payment by $150, do:
+
+  >> rate = Rate.new(0.0425, :apr, :duration => 30.years)
+  >> extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
+
+Disregarding the block, we have used the same parameters as the first
+example.  Notice the difference in the results:
+
+  >> amortization.payments.sum
+  => DecNum('-442745.98')
+  >> extra_payments.payments.sum
+  => DecNum('-400566.24')
+  >> amortization.interest.sum
+  => DecNum('192745.98')
+  >> extra_payments.interest.sum
+  => DecNum('150566.24')
+
+*Note*: you are _not_ allowed to modify a payment to pay _less_ than the
+normally calculated payment.
+
+You can also increase your payment to a specific amount:
+
+  >> extra_payments_2 = 250000.amortize(rate){ -1500 }
+
 = ABOUT
 
-I began developing _finance_ while writing a Ruby script for analyzing
-mortgages.  I couldn't find an existing resource for these tools, I am
-hoping to save other folks some time by releasing what I have as a gem.
+I started developing _finance_ while analyzing mortgages as a personal
+project.  Spreadsheets have convenient formulas for doing this type of
+work, until you want to do something semi-complex (like ARMs or extra
+payments), at which point you need to create your own amortization
+table.  I thought I could create a better interface for this type of
+work in Ruby, and since I couldn't find an existing resource for these
+tools, I am hoping to save other folks some time by releasing what I
+have as a gem.
+
+More broadly, I believe there are many financial calculations that
+are necessary for effective management of personal finances, but are
+difficult (or impossible) to do with spreadsheets or other existing open
+tools.  My hope is that the _finance_ library will grow to provide a set
+of open, tested tools to fill this gap.
 
 If you have used _finance_ and find it useful, I would enjoy hearing
 about it!
@@ -50,16 +114,12 @@ about it!
 
 Currently implemented features include:
 
+* Uses the {http://flt.rubyforge.org/ flt} library to ensure precision decimal arithmetic in all calculations.
 * Fixed-rate mortgage amortization (30/360).
 * Interest rates
 * Various cash flow computations, such as NPV, IRR, and sum.
-
-Planned features include:
-
 * Adjustable rate mortgage amortization.
 * Payment modifications (i.e., how does paying an additional $75 per month affect the amortization?)
-* Balloon payments.
-* Support for amortization methods other than 30/360.
 
 = RESOURCES
 
@@ -68,6 +128,9 @@ This gem and related documentation is available through
 
 Source code and bug tracking is available via
 {http://github.com/wkranec/finance github}.
+
+Additional documentation is available on the
+{https://github.com/wkranec/finance/wiki wiki}.
 
 = COPYRIGHT
 
