@@ -55,7 +55,7 @@ Since we are looking at an ARM, there is no longer a single "payment" value.
 But we can look at the different payments over time.
 
   >> arm.payments.uniq
-  => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), DecNum('-1641.34'), DecNum('-1680.27'), DecNum('-1680.32')]
+  => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), DecNum('-1641.34'), ... snipped ... ]
 
 The other methods previously discussed can be accessed in the same way:
 
@@ -101,9 +101,9 @@ work in Ruby, and since I couldn't find an existing resource for these
 tools, I am hoping to save other folks some time by releasing what I
 have as a gem.
 
-More broadly, I believe there are many financial calculations that
-are necessary for effective management of personal finances, but are
-difficult (or impossible) to do with spreadsheets or other existing open
+More broadly, I believe there are many calculations that are necessary
+for the effective management of personal finances, but are difficult
+(or impossible) to do with spreadsheets or other existing open source
 tools.  My hope is that the _finance_ library will grow to provide a set
 of open, tested tools to fill this gap.
 
