@@ -1,4 +1,6 @@
+require 'rubygems'
 require 'cashflows'
+require 'flt'
 
 class Period
   attr_accessor :payment
@@ -27,7 +29,14 @@ class Period
   end
 
   def modify_payment(&modifier)
-    self.payment = modifier.call(self)
+    value = modifier.call(self)
+    
+    # There's a chance that the block does not return a decimal.
+    unless value.class == Flt::DecNum
+      value = Flt::DecNum value.to_s
+    end
+
+    self.payment = value
   end
 
   def payment=(value)
@@ -64,12 +73,6 @@ class Amortization
     duration = @rate_duration - @periods.length
     payment = Amortization.payment @balance, rate.monthly, duration
 
-    if @rates.length == 1
-      @payment = payment
-    else
-      @payment = nil
-    end
-
     rate.duration.times do
       # Do this first in case the balance is zero already.
       if @balance.zero?
@@ -84,6 +87,12 @@ class Amortization
       
       @periods << period
       @balance = period.balance
+    end
+
+    if @rates.length == 1
+      @payment = self.payments[0]
+    else
+      @payment = nil
     end
   end
 

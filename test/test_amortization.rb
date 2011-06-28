@@ -138,7 +138,7 @@ class TestExtraPaymentAmortization < Test::Unit::TestCase
   end
 
   def test_payment
-    assert_equal D('-926.23'), @amortization.payment
+    assert_equal D('-1026.23'), @amortization.payment
   end
 
   def test_payment_sum
