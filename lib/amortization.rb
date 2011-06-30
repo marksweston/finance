@@ -154,7 +154,7 @@ class Amortization
 end
 
 class Numeric
-  def amortize(rate, &block)
-    amortization = Amortization.new(self, rate, &block)
+  def amortize(*rates, &block)
+    amortization = Amortization.new(self, *rates, &block)
   end
 end
