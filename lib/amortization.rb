@@ -2,33 +2,23 @@ require 'rubygems'
 require 'cashflows'
 require 'flt'
 
-class Period
-  attr_accessor :payment
-  attr_accessor :principal
-  attr_accessor :rate
+class Payment
+  attr_accessor :amount
 
-  def additional_payment
-    @payment-@original_payment
+  def additional_amount
+    @amount - @original
   end
 
-  # Return the remaining balance at the end of the period.
-  def balance
-    @principal + @payment + self.interest
+  def initialize(amount)
+    @amount = amount
+    @original = amount
   end
 
-  def initialize(principal, rate, payment)
-    @principal = principal
-    @rate = rate
-    @payment = payment
-    @original_payment = payment
+  def inspect
+    "Payment(#{@amount})"
   end
 
-  # Return the interest charged for the period.
-  def interest
-    (@principal * @rate).round(2)
-  end
-
-  def modify_payment(&modifier)
+  def modify(&modifier)
     value = modifier.call(self)
     
     # There's a chance that the block does not return a decimal.
@@ -36,25 +26,23 @@ class Period
       value = Flt::DecNum value.to_s
     end
 
-    self.payment = value
+    @amount = value
   end
 
-  def payment=(value)
-    total = @principal + self.interest
-    if value.abs > total
-      @payment = -total
-    else
-      @payment = value
-    end
+  # Return the amount of the payment.  Provided for backwards compatibility.
+  def payment
+    @amount
   end
 end
 
 class Amortization
+  attr_accessor :additional_payments
   attr_accessor :balance
   attr_accessor :block
+  attr_accessor :interest
   attr_accessor :rate_duration
   attr_accessor :payment
-  attr_accessor :periods
+  attr_accessor :payments
   attr_accessor :principal
   attr_accessor :rates
 
@@ -62,31 +50,49 @@ class Amortization
     self.principal == amortization.principal and self.rates == amortization.rates and self.payments == amortization.payments
   end
 
-  def additional_payments
-    @periods.collect{ |period| period.additional_payment }
-  end
-
   def amortize(rate)
     # For the purposes of calculating a payment, the relevant time
-    # period is the remaining number of periods in the loan, _not_ the
-    # duration of the rate itself.
-    duration = @rate_duration - @periods.length
-    payment = Amortization.payment @balance, rate.monthly, duration
+    # period is the remaining number of periods in the loan, not
+    # necessarily the duration of the rate itself.
+    periods = @rate_duration - @payments.length
+    amount = Amortization.payment @balance, rate.monthly, periods
 
+    pmt = Payment.new(amount)
+    if @block then pmt.modify(&@block) end
+      
     rate.duration.times do
       # Do this first in case the balance is zero already.
-      if @balance.zero?
-        break
-      end
+      if @balance.zero? then break end
 
-      period = Period.new(@balance, rate.monthly, payment)
+      # Compute and record interest on the outstanding balance.
+      interest = (@balance * rate.monthly).round(2)
+      @balance += interest
+      @interest << interest
 
-      if @block
-        period.modify_payment(&@block)
-      end
-      
-      @periods << period
-      @balance = period.balance
+      # Don't pay more than the outstanding balance
+      if pmt.amount.abs > @balance then pmt.amount = -@balance end
+
+      @payments << pmt.amount
+      @additional_payments << pmt.additional_amount
+      @balance += pmt.amount
+    end
+  end
+
+  # Compute the amortization of the principal.
+  def compute
+    @balance = @principal
+    @interest = []
+    @payments = []
+    @additional_payments = []
+
+    @rates.each do |rate|
+      amortize(rate)
+    end
+
+    # Add any remaining balance due to rounding error to the last payment.
+    unless @balance.zero?
+      @payments[-1] -= @balance
+      @balance = 0
     end
 
     if @rates.length == 1
@@ -96,24 +102,8 @@ class Amortization
     end
   end
 
-  # Compute the amortization of the principal.
-  def compute
-    @balance = @principal
-    @periods = []
-
-    @rates.each do |rate|
-      amortize(rate)
-    end
-
-    # Add any remaining balance due to rounding error to the last payment.
-    unless @balance.zero?
-      @periods[-1].payment -= @balance
-      @balance = 0
-    end
-  end
-
   def duration
-    @periods.length
+    @payments.length
   end
 
   def initialize(principal, *rates, &block)
@@ -126,23 +116,13 @@ class Amortization
   end
 
   def inspect
-    "Amortization.new(#{@principal}"
-  end
-
-  # Return an Array with the amount of interest charged in each period.
-  def interest
-    @periods.collect { |period| period.interest }
+    "Amortization.new(#{@principal})"
   end
 
   # Return the periodic payment due on a loan, based on the
   #{http://en.wikipedia.org/wiki/Amortization_calculator amortization process}.
   def Amortization.payment(balance, rate, periods)
     -(balance * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
-  end
-
-  # Return an array with the payment amount for each period.
-  def payments
-    @periods.collect { |period| period.payment }
   end
 
   # "Pretty print" a text amortization table.
