@@ -1,7 +1,7 @@
-require 'amortization'
-require 'cashflows'
-require 'rates'
-require 'timespan'
+require_relative 'amortization'
+require_relative 'cashflows'
+require_relative 'rates'
+require_relative 'timespan'
 
 # The *Finance* module adheres to the following conventions for
 # financial calculations:

@@ -1,5 +1,6 @@
+require_relative 'cashflows'
+
 require 'rubygems'
-require 'cashflows'
 require 'flt'
 
 class Payment
