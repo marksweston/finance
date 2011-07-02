@@ -1,40 +1,8 @@
 require_relative 'cashflows'
+require_relative 'transaction'
 
 require 'rubygems'
 require 'flt'
-
-class Payment
-  attr_accessor :amount
-
-  def additional_amount
-    @amount - @original
-  end
-
-  def initialize(amount)
-    @amount = amount
-    @original = amount
-  end
-
-  def inspect
-    "Payment(#{@amount})"
-  end
-
-  def modify(&modifier)
-    value = modifier.call(self)
-    
-    # There's a chance that the block does not return a decimal.
-    unless value.class == Flt::DecNum
-      value = Flt::DecNum value.to_s
-    end
-
-    @amount = value
-  end
-
-  # Return the amount of the payment.  Provided for backwards compatibility.
-  def payment
-    @amount
-  end
-end
 
 class Amortization
   attr_accessor :additional_payments
@@ -58,7 +26,7 @@ class Amortization
     periods = @rate_duration - @payments.length
     amount = Amortization.payment @balance, rate.monthly, periods
 
-    pmt = Payment.new(amount)
+    pmt = Transaction.new(amount)
     if @block then pmt.modify(&@block) end
       
     rate.duration.times do
