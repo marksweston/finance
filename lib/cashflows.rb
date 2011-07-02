@@ -1,6 +1,10 @@
 module Cashflow
-  # Return the {http://en.wikipedia.org/wiki/Internal_rate_of_return
-  # internal rate of return} for a given sequence of cashflows.
+  # calculate the internal rate of return for a sequence of cash flows
+  # @return [Numeric] the internal rate of return
+  # @example
+  #   [-4000,1200,1410,1875,1050].irr #=> 0.143
+  # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
+  # @api public
   def irr(iterations=100)
     rate = 1.0
     investment = self[0]
@@ -10,8 +14,13 @@ module Cashflow
     rate
   end
 
-  # Return the {http://en.wikipedia.org/wiki/Net_present_value net present value} of a sequence of cash flows given
-  # the discount rate _rate_.
+  # calculate the net present value of a sequence of cash flows
+  # @return [Numeric] the net present value
+  # @param [Numeric] rate the discount rate to be applied
+  # @example
+  #   [-100.0, 60, 60, 60].npv(0.1) #=> 49.211
+  # @see http://en.wikipedia.org/wiki/Net_present_value
+  # @api public
   def npv(rate)
     total = 0.0
     self.each_with_index do |cashflow, index|
@@ -20,6 +29,8 @@ module Cashflow
     total
   end
 
+  # @return [Numeric] the sum
+  # @api public
   def sum
     self.inject(:+)
   end

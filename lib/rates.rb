@@ -9,32 +9,39 @@ class Rate
   attr_reader :nominal
 
   def ==(rate)
-    self.nominal == rate.nominal and self.periods == rate.periods
+    @effective == rate.effective
   end
 
-  # Alias method for *effective*.
+  # (see #effective=)
+  # @api public
   def apr=(apr)
     self.effective = apr
   end
 
+  # @api public
   def apr
     self.effective
   end
 
-  # Alias method for *effective*.
+  # (see #effective=)
+  # @api public
   def apy=(apy)
     self.effective = apy
   end
 
+  # @api public
   def apy
     self.effective
   end
 
+  # set the effective interest rate
+  # @param [Numeric] rate the effective interest rate
   def effective=(rate)
     @effective = rate
     @nominal = Rate.to_nominal(rate, @periods)
   end
 
+  # @api public
   def initialize(rate, type, opts={})
     # Make sure the rate is a decimal.
     unless rate.class == Flt::DecNum
@@ -74,19 +81,34 @@ class Rate
     end
   end
 
+  # @api public
   def inspect
     "Rate.new(#{self.apr.round(6)}, :apr)"
   end
 
+  # @return [Numeric] the monthly effective interest rate
+  # @api public
   def monthly
     (self.effective / 12).round(15)
   end
 
+  # set the nominal interest rate
+  # @param [Numeric] rate the nominal interest rate
+  # @api public
   def nominal=(rate)
     @nominal = rate
     @effective = Rate.to_effective(rate, @periods)
   end
 
+  # convert a nominal interest rate to an effective interest rate
+  # @return [Numeric] the effective interest rate
+  # @param [Numeric] rate the nominal interest rate
+  # @param [Numeric] periods the number of compounding periods per year
+  # @example
+  #   Rate.to_effective(0.05, 4) #=> 0.05095
+  # @see http://en.wikipedia.org/wiki/Effective_interest_rate
+  # @see http://en.wikipedia.org/wiki/Nominal_interest_rate
+  # @api public
   def Rate.to_effective(rate, periods)
     unless periods == Flt::DecNum.infinity
       (1 + rate / periods) ** periods - 1
@@ -95,6 +117,16 @@ class Rate
     end
   end
 
+  # convert an effective interest rate to a nominal interest rate
+  # @return [Numeric] the nominal interest rate
+  # @param [Numeric] rate the effective interest rate
+  # @param [Numeric] periods the number of compounding periods per year
+  # @example
+  #   Rate.to_nominal(0.06, 365) #=> 0.05827
+  # @see http://en.wikipedia.org/wiki/Effective_interest_rate
+  # @see http://en.wikipedia.org/wiki/Nominal_interest_rate
+  # @see http://www.miniwebtool.com/nominal-interest-rate-calculator/
+  # @api public
   def Rate.to_nominal(rate, periods)
     unless periods == Flt::DecNum.infinity
       periods * ((1 + rate) ** (1 / periods) - 1)
