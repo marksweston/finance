@@ -1,9 +1,21 @@
-require_relative 'cashflows'
-require_relative 'transaction'
+require 'cashflows'
+require 'transaction'
 
 require 'rubygems'
 require 'flt'
 
+# 
+# @example Borrow $250,000 under a 30 year, fixed-rate loan with a 4.25% APR
+#   rate = Rate.new(0.0425, :apr, :duration => 30.years)
+#   amortization = 250000.amortize(rate)
+# @example Borrow $250,000 under a 30 year, adjustable rate loan, with an APR starting at 4.25%, and increasing by 1% every five years
+#   values = %w{ 0.0425 0.0525 0.0625 0.0725 0.0825 0.0925 }
+#   rates = values.collect { |value| Rate.new( value, :apr, :duration = 5.years ) }
+#   arm = Amortization.new(250000, *rates)
+# @example Borrow $250,000 under a 30 year, fixed-rate loan with a 4.25% APR, but pay $150 extra each month
+#   rate = Rate.new(0.0425, :apr, :duration => 30.years)
+#   extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
+# @api public
 class Amortization
   attr_accessor :additional_payments
   attr_accessor :balance
@@ -71,10 +83,22 @@ class Amortization
     end
   end
 
+  # @return [Integer] the time required to pay off the loan, in months
+  # @example
+  #   rate = 
+  # @api public
   def duration
     @payments.length
   end
 
+  # create a new Amortization instance
+  # @return [Amortization]
+  # @param [DecNum] principal the initial amount of the loan or investment
+  # @param [Rate] rates the applicable interest rates
+  # @param [Proc] block
+  # @example there are two ways to create a new Amortization
+  #   rate = 
+  # @api public
   def initialize(principal, *rates, &block)
     @principal = principal
     @rates     = rates
@@ -88,10 +112,19 @@ class Amortization
     "Amortization.new(#{@principal})"
   end
 
-  # Return the periodic payment due on a loan, based on the
-  #{http://en.wikipedia.org/wiki/Amortization_calculator amortization process}.
-  def Amortization.payment(balance, rate, periods)
-    -(balance * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
+  # @return [DecNum] the periodic payment due on a loan
+  # @param [DecNum] principal the initial amount of the loan or investment
+  # @param [Rate] rate the applicable interest rate (per period)
+  # @param [Integer] periods the number of periods needed for repayment
+  # @note in most cases, you will probably want to use rate.monthly when calling this function outside of an Amortization instance.
+  # @example
+  #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+  #   rate.duration #=> 360
+  #   Amortization.payment(200000, rate.monthly, rate.duration) #=> DecNum('-926.23')
+  # @see http://en.wikipedia.org/wiki/Amortization_calculator
+  # @api public
+  def Amortization.payment(principal, rate, periods)
+    -(principal * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
   end
 
   # "Pretty print" a text amortization table.
@@ -103,6 +136,8 @@ class Amortization
 end
 
 class Numeric
+  # @see Amortization#new
+  # @api public
   def amortize(*rates, &block)
     amortization = Amortization.new(self, *rates, &block)
   end
