@@ -4,7 +4,7 @@ require 'transaction'
 require 'rubygems'
 require 'flt'
 
-# 
+# the Amortization class provides an interface for working with loan amortizations.
 # @example Borrow $250,000 under a 30 year, fixed-rate loan with a 4.25% APR
 #   rate = Rate.new(0.0425, :apr, :duration => 30.years)
 #   amortization = 250000.amortize(rate)
@@ -17,25 +17,44 @@ require 'flt'
 #   extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
 # @api public
 class Amortization
-  attr_accessor :additional_payments
-  attr_accessor :balance
-  attr_accessor :block
-  attr_accessor :interest
-  attr_accessor :rate_duration
-  attr_accessor :payment
-  attr_accessor :payments
-  attr_accessor :principal
-  attr_accessor :rates
+  # @return [Numeric] the balance of the loan at the end of the amortization period (usually zero)
+  # @api public
+  attr_reader :balance
+  # @return [Array] the interest charges on the loan
+  # @api public
+  attr_reader :interest
+  # @return [Numeric] the required monthly payment.  For loans with more than one rate, returns nil
+  # @api public
+  attr_reader :payment
+  # @return [Numeric] the principal amount of the loan
+  # @api public
+  attr_reader :principal
+  # @return [Array] the interest rates used for calculating the amortization
+  # @api public
+  attr_reader :rates
 
+  # @return [Numeric] -1, 0, or +1
+  # @param [Amortization]
+  # @api public
   def ==(amortization)
     self.principal == amortization.principal and self.rates == amortization.rates and self.payments == amortization.payments
   end
 
+  # @return [Array] the amount of any additional payments in each period
+  # @api public
+  def additional_payments
+    @pmts.collect{ |p| p.additional_amount }
+  end
+
+  # amortize the balance of loan with the given interest rate
+  # @return none
+  # @param [Rate] rate the interest rate to use in the amortization
+  # @api private
   def amortize(rate)
     # For the purposes of calculating a payment, the relevant time
     # period is the remaining number of periods in the loan, not
     # necessarily the duration of the rate itself.
-    periods = @rate_duration - @payments.length
+    periods = @rate_duration - @pmts.length
     amount = Amortization.payment @balance, rate.monthly, periods
 
     pmt = Transaction.new(amount)
@@ -53,18 +72,18 @@ class Amortization
       # Don't pay more than the outstanding balance
       if pmt.amount.abs > @balance then pmt.amount = -@balance end
 
-      @payments << pmt.amount
-      @additional_payments << pmt.additional_amount
+      @pmts << pmt.dup
       @balance += pmt.amount
     end
   end
 
-  # Compute the amortization of the principal.
+  # compute the amortization of the principal
+  # @return none
+  # @api private
   def compute
     @balance = @principal
     @interest = []
-    @payments = []
-    @additional_payments = []
+    @pmts = []
 
     @rates.each do |rate|
       amortize(rate)
@@ -72,7 +91,7 @@ class Amortization
 
     # Add any remaining balance due to rounding error to the last payment.
     unless @balance.zero?
-      @payments[-1] -= @balance
+      @pmts[-1].amount -= @balance
       @balance = 0
     end
 
@@ -88,7 +107,7 @@ class Amortization
   #   rate = 
   # @api public
   def duration
-    @payments.length
+    @pmts.length
   end
 
   # create a new Amortization instance
@@ -108,6 +127,7 @@ class Amortization
     compute
   end
 
+  # @api public
   def inspect
     "Amortization.new(#{@principal})"
   end
@@ -127,11 +147,10 @@ class Amortization
     -(principal * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
   end
 
-  # "Pretty print" a text amortization table.
-  def pprint
-    @periods.each_with_index do |p, i|
-      puts "%03d  $%9s  %8s  $%7s  $%7s  $%9s" % [i, p.principal, p.rate, p.payment, p.interest, p.balance]
-    end
+  # @return [Array] the amount of the payment in each period
+  # @api public
+  def payments
+    @pmts.collect{ |p| p.amount }
   end
 end
 
