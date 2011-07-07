@@ -1,0 +1,28 @@
+# Version 0.2.1
+
+## Bugs:
+* The amortize Numeric method now accepts a variable number of rates.
+* Lots of additional documentation.
+
+## Performance:
+* Some code refactoring and clean-up to reduce the number of calculations.
+
+# Version 0.2.0
+28 Jun 2011
+
+## Features:
+* Added support for adjustable rate mortgages.
+* Added support for additional payments.
+
+# Version 0.1.1
+21 Jun 2011
+
+## Bugs:
+* Code examples in README now display correctly in the online documentation.
+
+# Version 0.1.0
+21 Jun 2011
+
+## Features:
+* Support for fixed-rate mortgage amortization.
+* NPV, IRR array methods for cash flow analysis.
