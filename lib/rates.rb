@@ -154,10 +154,14 @@ class Rate
   # @see http://www.miniwebtool.com/nominal-interest-rate-calculator/
   # @api public
   def Rate.to_nominal(rate, periods)
+    unless periods.class == Flt::DecNum
+      periods = Flt::DecNum periods.to_s
+    end
+
     unless periods == Flt::DecNum.infinity
       periods * ((1 + rate) ** (1 / periods) - 1)
     else
-      Math.log(rate + 1)
+      (rate + 1).log
     end
   end
 
