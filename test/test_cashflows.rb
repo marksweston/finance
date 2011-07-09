@@ -1,4 +1,4 @@
-require 'cashflows'
+require 'finance'
 require 'test/unit'
 
 class TestIRR < Test::Unit::TestCase

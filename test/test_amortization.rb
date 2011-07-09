@@ -1,4 +1,6 @@
 require 'finance'
+include Finance
+require 'rubygems'
 require 'flt/d'
 require 'shoulda'
 require 'test/unit'
