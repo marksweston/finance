@@ -1,7 +1,5 @@
-require 'amortization'
-require 'cashflows'
-require 'interval'
-require 'rates'
+require 'finance/cashflows'
+require 'finance/interval'
 
 # The *Finance* module adheres to the following conventions for
 # financial calculations:
@@ -11,6 +9,9 @@ require 'rates'
 #  * *principal* represents the outstanding balance of a loan or annuity.
 #  * *rate* represents the interest rate _per period_.
 module Finance
+  autoload :Amortization, 'finance/amortization'
+  autoload :Rate,         'finance/rates'
+  autoload :Transaction,  'finance/transaction'
 
   # Return the number of periods needed to pay off a loan with the
   # given payment.
