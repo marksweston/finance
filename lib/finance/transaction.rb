@@ -36,11 +36,11 @@ module Finance
     # @param [Block] modifier a block which returns a modified amount for the transaction
     # @api public
     def modify(&modifier)
-      @amount = modifier.call(self).to_decimal
+      @amount = modifier.call(self).to_d
     end
 
     # (see #amount)
-    # @depreciated Provided for backwards compatibility
+    # @deprecated Provided for backwards compatibility
     def payment
       @amount
     end

@@ -118,7 +118,7 @@ module Finance
     #   rate = 
     # @api public
     def initialize(principal, *rates, &block)
-      @principal = principal.to_decimal
+      @principal = principal.to_d
       @rates     = rates
       @rate_duration = (rates.collect { |r| r.duration }).sum
       @block     = block

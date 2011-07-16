@@ -52,7 +52,7 @@ module Finance
     # a convenience method which sets the value of @periods
     # @return none
     # @param [String, Numeric] input the compounding frequency
-    # @raises [ArgumentError] if input is not an accepted keyword or Numeric
+    # @raise [ArgumentError] if input is not an accepted keyword or Numeric
     # @api private
     def compounds=(input)
       @periods = case input
@@ -99,9 +99,9 @@ module Finance
 
       # Set the rate in the proper way, based on the value of type.
       if @@ETYPES.include? type.to_s
-        self.effective = rate.to_decimal
+        self.effective = rate.to_d
       else
-        self.nominal = rate.to_decimal
+        self.nominal = rate.to_d
       end
     end
 
@@ -136,7 +136,7 @@ module Finance
     #   Rate.to_effective(0.05, 4) #=> 0.05095
     # @api public
     def Rate.to_effective(rate, periods)
-      rate, periods = rate.to_decimal, periods.to_decimal
+      rate, periods = rate.to_d, periods.to_d
 
       if periods.infinite?
         rate.exp - 1
@@ -154,7 +154,7 @@ module Finance
     # @see http://www.miniwebtool.com/nominal-interest-rate-calculator/
     # @api public
     def Rate.to_nominal(rate, periods)
-      rate, periods = rate.to_decimal, periods.to_decimal
+      rate, periods = rate.to_d, periods.to_d
 
       if periods.infinite?
         (rate + 1).log
