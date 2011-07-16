@@ -56,8 +56,8 @@ class TestRates < Test::Unit::TestCase
     should "be comparable to other interest rates" do
       r1 = Rate.new(0.15, :nominal)
       r2 = Rate.new(0.16, :nominal)
-      assert_equal 1, r2 <=> r1
-      assert_equal -1, r1 <=> r2
+      assert_equal( 1, r2 <=> r1)
+      assert_equal(-1, r1 <=> r2)
     end
     
     should "convert to a monthly value" do
