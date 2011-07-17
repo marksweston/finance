@@ -53,7 +53,7 @@ module Finance
       # For the purposes of calculating a payment, the relevant time
       # period is the remaining number of periods in the loan, not
       # necessarily the duration of the rate itself.
-      periods = @rate_duration - self.payments.length
+      periods = @periods - @period
       amount = Amortization.payment @balance, rate.monthly, periods
 
       pmt = Transaction.new(amount, :payment)
@@ -74,6 +74,7 @@ module Finance
 
         @transactions << pmt.dup
         @balance += pmt.amount
+        @period += 1
       end
     end
 
@@ -122,8 +123,11 @@ module Finance
     def initialize(principal, *rates, &block)
       @principal = principal.to_d
       @rates     = rates
-      @rate_duration = (rates.collect { |r| r.duration }).sum
       @block     = block
+      
+      # compute the total duration from all of the rates.
+      @periods = (rates.collect { |r| r.duration }).sum
+      @period  = 0
 
       compute
     end
