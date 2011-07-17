@@ -10,10 +10,12 @@ module Finance
   class Rate
     include Comparable
 
-    # Accepted effective rate types
-    @@ETYPES = %w{apr apy effective}
-    # Accepted nominal rate types
-    @@NTYPES = %w{nominal}
+    # Accepted rate types
+    TYPES = { :apr       => "effective",
+              :apy       => "effective",
+              :effective => "effective",
+              :nominal   => "nominal" 
+            }
 
     # @return [Numeric] the duration for which the rate is valid, in months
     # @api public
@@ -87,8 +89,6 @@ module Finance
     #   Rate.new(0.035, :apr) #=> Rate(0.035, :apr)
     # @api public
     def initialize(rate, type, opts={})
-      validate_type type
-
       # Default monthly compounding.
       opts = { :compounds => :monthly }.merge opts
 
@@ -98,10 +98,10 @@ module Finance
       end
 
       # Set the rate in the proper way, based on the value of type.
-      if @@ETYPES.include? type.to_s
-        self.effective = rate.to_d
-      else
-        self.nominal = rate.to_d
+      begin
+        send("#{TYPES.fetch(type)}=", rate.to_d)
+      rescue KeyError
+        raise ArgumentError, "type must be one of #{TYPES.keys.join(', ')}", caller
       end
     end
 
@@ -163,18 +163,6 @@ module Finance
       end
     end
 
-    # validate the value of the type variable
-    # @return none
-    # @raise [ArgumentError] if an acceptable rate type is not provided
-    # @param [String] type
-    # @api private
-    def validate_type(type)
-      types = @@ETYPES + @@NTYPES
-      unless types.include? type.to_s
-        raise ArgumentError, "type must be one of #{types.join(', ')}", caller
-      end
-    end
-
-    private :compounds=, :effective=, :nominal=, :validate_type
+    private :compounds=, :effective=, :nominal=
   end
 end
