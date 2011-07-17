@@ -1,12 +1,14 @@
-require 'finance'
+require_relative '../lib/finance/amortization.rb'
+require_relative '../lib/finance/interval.rb'
+require_relative '../lib/finance/rates.rb'
 include Finance
-require 'rubygems'
+
 require 'flt/d'
+require 'minitest/unit'
 require 'shoulda'
-require 'test/unit'
 
 # @see http://tinyurl.com/6zroqvd for detailed calculations for the
-# examples in these unit tests.
+#   examples in these unit tests.
 class TestAmortization < Test::Unit::TestCase
   def ipmt(principal, rate, payment, period)
     -(-rate*principal*(1+rate)**(period-1) - payment*((1+rate)**(period-1)-1)).round(2)

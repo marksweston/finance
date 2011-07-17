@@ -1,4 +1,6 @@
+require_relative 'cashflows'
 require_relative 'decimal'
+require_relative 'transaction'
 
 module Finance
   # the Amortization class provides an interface for working with loan amortizations.

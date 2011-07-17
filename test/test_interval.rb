@@ -1,12 +1,18 @@
-require 'finance'
-require 'test/unit'
+require_relative '../lib/finance/interval.rb'
 
-class TestTime < Test::Unit::TestCase
-  def test_months
-    assert_equal 360, 360.months
-  end
+require 'minitest/unit'
+require 'shoulda'
 
-  def test_years
-    assert_equal 360, 30.years
+class TestInterval < Test::Unit::TestCase
+  context "a time interval" do
+    context "can be created from an integer" do
+      should "convert an integer into months" do
+        assert_equal 360, 360.months
+      end
+
+      should "convert an integer into years" do
+        assert_equal 360, 30.years
+      end
+    end
   end
 end

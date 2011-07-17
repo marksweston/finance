@@ -1,9 +1,10 @@
-require 'finance'
-require 'rubygems'
+require_relative '../lib/finance/rates.rb'
+include Finance
+
 require 'flt'
 require 'flt/d'
+require 'minitest/unit'
 require 'shoulda'
-require 'test/unit'
 
 class TestRates < Test::Unit::TestCase
   context "an interest rate" do
@@ -49,7 +50,7 @@ class TestRates < Test::Unit::TestCase
     end
 
     should "accept a duration if given" do
-      rate = Rate.new(0.0375, :effective, :duration => 30.years)
+      rate = Rate.new(0.0375, :effective, :duration => 360)
       assert_equal 360, rate.duration
     end
 
