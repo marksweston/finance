@@ -7,6 +7,8 @@ module Finance
     # @return [DecNum] the cash value of the transaction
     # @api public
     attr_accessor :amount
+    attr_accessor :period
+    attr_accessor :type
 
     # @return [DecNum] the difference between the 
     # @api public
@@ -17,10 +19,14 @@ module Finance
     # create a new Transaction
     # @return [Transaction]
     # @param [Numeric] amount the cash value of the transaction
-    def initialize(amount, type=nil)
+    def initialize(amount, opts={})
       @amount = amount
       @original = amount
-      @type = type
+      
+      # Set optional attributes..
+      opts.each do |key, value|
+        send("#{key}=", value)
+      end
     end
 
     def interest?
@@ -35,8 +41,8 @@ module Finance
     # @return none
     # @param [Block] modifier a block which returns a modified amount for the transaction
     # @api public
-    def modify(&modifier)
-      @amount = modifier.call(self).to_d
+    def modify
+      @amount = yield(self).to_d
     end
 
     # (see #amount)

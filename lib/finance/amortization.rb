@@ -56,7 +56,7 @@ module Finance
       periods = @periods - @period
       amount = Amortization.payment @balance, rate.monthly, periods
 
-      pmt = Transaction.new(amount, :payment)
+      pmt = Transaction.new(amount, :type => :payment, :period => @period)
       if @block then pmt.modify(&@block) end
         
       rate.duration.times do
@@ -65,15 +65,15 @@ module Finance
 
         # Compute and record interest on the outstanding balance.
         int = (@balance * rate.monthly).round(2)
-        interest = Transaction.new(int, :interest)
+        interest = Transaction.new(int, :type => :interest, :period => @period)
         @balance += interest.amount
         @transactions << interest.dup
 
-        # Don't pay more than the outstanding balance
+        # Record payment.  Don't pay more than the outstanding balance.
         if pmt.amount.abs > @balance then pmt.amount = -@balance end
-
         @transactions << pmt.dup
         @balance += pmt.amount
+        
         @period += 1
       end
     end
