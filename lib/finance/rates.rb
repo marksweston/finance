@@ -2,8 +2,6 @@ require_relative 'decimal'
 
 module Finance
   # the Rate class provides an interface for working with interest rates.
-  # @example test
-  #   rate = Rate.new()
   # @see http://en.wikipedia.org/wiki/Effective_interest_rate
   # @see http://en.wikipedia.org/wiki/Nominal_interest_rate
   # @api public
@@ -17,13 +15,13 @@ module Finance
               :nominal   => "nominal" 
             }
 
-    # @return [Numeric] the duration for which the rate is valid, in months
+    # @return [Integer] the duration for which the rate is valid, in months
     # @api public
     attr_accessor :duration
-    # @return [Numeric] the effective interest rate
+    # @return [DecNum] the effective interest rate
     # @api public
     attr_reader :effective
-    # @return [Numeric] the nominal interest rate
+    # @return [DecNum] the nominal interest rate
     # @api public
     attr_reader :nominal
 
@@ -53,7 +51,7 @@ module Finance
 
     # a convenience method which sets the value of @periods
     # @return none
-    # @param [String, Numeric] input the compounding frequency
+    # @param [Symbol, Numeric] input the compounding frequency
     # @raise [ArgumentError] if input is not an accepted keyword or Numeric
     # @api private
     def compounds=(input)
@@ -71,7 +69,7 @@ module Finance
 
     # set the effective interest rate
     # @return none
-    # @param [Numeric] rate the effective interest rate
+    # @param [DecNum] rate the effective interest rate
     # @api private
     def effective=(rate)
       @effective = rate
@@ -81,7 +79,7 @@ module Finance
     # create a new Rate instance
     # @return [Rate]
     # @param [Numeric] rate the decimal value of the interest rate
-    # @param [String] type a valid rate type (see @@ETYPES and @@NTYPES)
+    # @param [Symbol] type a valid rate type (see TYPES)
     # @param [optional, Hash] opts set optional attributes
     # @option opts [String] :duration a time interval for which the rate is valid
     # @option opts [String] :compounds (:monthly) the number of compounding periods per year
@@ -109,7 +107,7 @@ module Finance
       "Rate.new(#{self.apr.round(6)}, :apr)"
     end
 
-    # @return [Numeric] the monthly effective interest rate
+    # @return [DecNum] the monthly effective interest rate
     # @example
     #   rate = Rate.new(0.15, :nominal)
     #   rate.apr.round(6) #=> DecNum('0.160755')
@@ -121,7 +119,7 @@ module Finance
 
     # set the nominal interest rate
     # @return none
-    # @param [Numeric] rate the nominal interest rate
+    # @param [DecNum] rate the nominal interest rate
     # @api private
     def nominal=(rate)
       @nominal = rate
@@ -129,11 +127,11 @@ module Finance
     end
 
     # convert a nominal interest rate to an effective interest rate
-    # @return [Numeric] the effective interest rate
+    # @return [DecNum] the effective interest rate
     # @param [Numeric] rate the nominal interest rate
     # @param [Numeric] periods the number of compounding periods per year
     # @example
-    #   Rate.to_effective(0.05, 4) #=> 0.05095
+    #   Rate.to_effective(0.05, 4) #=> DecNum('0.05095')
     # @api public
     def Rate.to_effective(rate, periods)
       rate, periods = rate.to_d, periods.to_d
@@ -146,11 +144,11 @@ module Finance
     end
 
     # convert an effective interest rate to a nominal interest rate
-    # @return [Numeric] the nominal interest rate
+    # @return [DecNum] the nominal interest rate
     # @param [Numeric] rate the effective interest rate
     # @param [Numeric] periods the number of compounding periods per year
     # @example
-    #   Rate.to_nominal(0.06, 365) #=> 0.05827
+    #   Rate.to_nominal(0.06, 365) #=> DecNum('0.05827')
     # @see http://www.miniwebtool.com/nominal-interest-rate-calculator/
     # @api public
     def Rate.to_nominal(rate, periods)
