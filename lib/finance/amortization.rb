@@ -19,9 +19,6 @@ module Finance
     # @return [Numeric] the balance of the loan at the end of the amortization period (usually zero)
     # @api public
     attr_reader :balance
-    # @return [Array] the interest charges on the loan
-    # @api public
-    attr_reader :interest
     # @return [Numeric] the required monthly payment.  For loans with more than one rate, returns nil
     # @api public
     attr_reader :payment
@@ -42,7 +39,7 @@ module Finance
     # @return [Array] the amount of any additional payments in each period
     # @api public
     def additional_payments
-      @transactions.find_all(&:payment?).collect{ |p| p.additional_amount }
+      @transactions.find_all(&:payment?).collect{ |p| p.difference }
     end
 
     # amortize the balance of loan with the given interest rate
@@ -56,7 +53,7 @@ module Finance
       periods = @periods - @period
       amount = Amortization.payment @balance, rate.monthly, periods
 
-      pmt = Transaction.new(amount, :type => :payment, :period => @period)
+      pmt = Payment.new(amount, :period => @period)
       if @block then pmt.modify(&@block) end
         
       rate.duration.times do
@@ -65,7 +62,7 @@ module Finance
 
         # Compute and record interest on the outstanding balance.
         int = (@balance * rate.monthly).round(2)
-        interest = Transaction.new(int, :type => :interest, :period => @period)
+        interest = Interest.new(int, :period => @period)
         @balance += interest.amount
         @transactions << interest.dup
 
