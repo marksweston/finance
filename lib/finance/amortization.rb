@@ -4,6 +4,9 @@ require_relative 'transaction'
 
 module Finance
   # the Amortization class provides an interface for working with loan amortizations.
+  # @note There are _two_ ways to create an amortization.  The first
+  #   example uses the amortize method for the Numeric class.  The second
+  #   calls Amortization.new directly.
   # @example Borrow $250,000 under a 30 year, fixed-rate loan with a 4.25% APR
   #   rate = Rate.new(0.0425, :apr, :duration => 30.years)
   #   amortization = 250000.amortize(rate)
@@ -16,19 +19,20 @@ module Finance
   #   extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
   # @api public
   class Amortization
-    # @return [Numeric] the balance of the loan at the end of the amortization period (usually zero)
+    # @return [DecNum] the balance of the loan at the end of the amortization period (usually zero)
     # @api public
     attr_reader :balance
-    # @return [Numeric] the required monthly payment.  For loans with more than one rate, returns nil
+    # @return [DecNum] the required monthly payment.  For loans with more than one rate, returns nil
     # @api public
     attr_reader :payment
-    # @return [Numeric] the principal amount of the loan
+    # @return [DecNum] the principal amount of the loan
     # @api public
     attr_reader :principal
     # @return [Array] the interest rates used for calculating the amortization
     # @api public
     attr_reader :rates
 
+    # compare two Amortization instances
     # @return [Numeric] -1, 0, or +1
     # @param [Amortization]
     # @api public
@@ -37,6 +41,10 @@ module Finance
     end
 
     # @return [Array] the amount of any additional payments in each period
+    # @example
+    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   amt = 300000.amortize(rate){ |payment| payment.amount-100}
+    #   amt.additional_payments #=> [DecNum('-100.00'), DecNum('-100.00'), ... ]
     # @api public
     def additional_payments
       @transactions.find_all(&:payment?).collect{ |p| p.difference }
@@ -102,8 +110,14 @@ module Finance
     end
 
     # @return [Integer] the time required to pay off the loan, in months
-    # @example
-    #   rate = 
+    # @example In most cases, the duration is equal to the total duration of all rates
+    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   amt = 300000.amortize(rate)
+    #   amt.duration #=> 360
+    # @example Extra payments may reduce the duration
+    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   amt = 300000.amortize(rate){ |payment| payment.amount-100}
+    #   amt.duration #=> 319
     # @api public
     def duration
       self.payments.length
@@ -114,8 +128,6 @@ module Finance
     # @param [DecNum] principal the initial amount of the loan or investment
     # @param [Rate] rates the applicable interest rates
     # @param [Proc] block
-    # @example there are two ways to create a new Amortization
-    #   rate = 
     # @api public
     def initialize(principal, *rates, &block)
       @principal = principal.to_d
@@ -135,6 +147,14 @@ module Finance
     end
 
     # @return [Array] the amount of interest charged in each period
+    # @example find the total cost of interest for a loan
+    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   amt = 300000.amortize(rate)
+    #   amt.interest.sum #=> DecNum('200163.94')
+    # @example find the total interest charges in the first six months
+    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   amt = 300000.amortize(rate)
+    #   amt.interest[0,6].sum #=> DecNum('5603.74')
     # @api public
     def interest
       @transactions.find_all(&:interest?).collect{ |p| p.amount }
@@ -156,6 +176,10 @@ module Finance
     end
 
     # @return [Array] the amount of the payment in each period
+    # @example find the total payments for a loan
+    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   amt = 300000.amortize(rate)
+    #   amt.payments.sum #=> DecNum('-500163.94')
     # @api public
     def payments
       @transactions.find_all(&:payment?).collect{ |p| p.amount }
