@@ -101,12 +101,16 @@ module Finance
     end
   end
 
+  # Represent an interest charge as a Transaction
+  # @see Transaction
   class Interest < Transaction
     def inspect
       "Interest(#{@amount})"
     end
   end
-
+  
+  # Represent a loan payment as a Transaction
+  # @see Transaction
   class Payment < Transaction
     def inspect
       "Payment(#{@amount})"
