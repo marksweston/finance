@@ -2,8 +2,7 @@ require_relative 'decimal'
 
 module Finance
   # the Rate class provides an interface for working with interest rates.
-  # @see http://en.wikipedia.org/wiki/Effective_interest_rate
-  # @see http://en.wikipedia.org/wiki/Nominal_interest_rate
+  # {render:Rate#new}
   # @api public
   class Rate
     include Comparable
@@ -79,12 +78,14 @@ module Finance
     # create a new Rate instance
     # @return [Rate]
     # @param [Numeric] rate the decimal value of the interest rate
-    # @param [Symbol] type a valid rate type (see TYPES)
+    # @param [Symbol] type a valid {TYPES rate type}
     # @param [optional, Hash] opts set optional attributes
     # @option opts [String] :duration a time interval for which the rate is valid
     # @option opts [String] :compounds (:monthly) the number of compounding periods per year
     # @example create a 3.5% APR rate
     #   Rate.new(0.035, :apr) #=> Rate(0.035, :apr)
+    # @see http://en.wikipedia.org/wiki/Effective_interest_rate
+    # @see http://en.wikipedia.org/wiki/Nominal_interest_rate
     # @api public
     def initialize(rate, type, opts={})
       # Default monthly compounding.
