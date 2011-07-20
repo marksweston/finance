@@ -1,16 +1,25 @@
-_finance_ - a library for financial calculations in Ruby.
+= FINANCE
 
-= INSTALL
+a library for financial modelling in Ruby.
+
+== INSTALL
 
   $ sudo gem install finance
 
-= OVERVIEW
+== OVERVIEW
 
-== GETTING STARTED
+=== GETTING STARTED
 
   >> require 'finance'
 
-== AMORTIZATION
+*Note:* As of version 1.0.0, the entire library is contained under the
+Finance namespace.  Existing code will not work unless you add:
+
+  >> include Finance
+
+for all of the examples below, we'll assume that you have done this.
+
+=== AMORTIZATION
 
 You are interested in borrowing $250,000 under a 30 year, fixed-rate
 loan with a 4.25% APR.
@@ -55,7 +64,7 @@ Since we are looking at an ARM, there is no longer a single "payment" value.
 But we can look at the different payments over time.
 
   >> arm.payments.uniq
-  => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), DecNum('-1641.34'), ... snipped ... ]
+  => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), ... snipped ... ]
 
 The other methods previously discussed can be accessed in the same way:
 
@@ -83,14 +92,11 @@ example.  Notice the difference in the results:
   >> extra_payments.interest.sum
   => DecNum('150566.24')
 
-*Note*: you are _not_ allowed to modify a payment to pay _less_ than the
-normally calculated payment.
-
 You can also increase your payment to a specific amount:
 
   >> extra_payments_2 = 250000.amortize(rate){ -1500 }
 
-= ABOUT
+== ABOUT
 
 I started developing _finance_ while analyzing mortgages as a personal
 project.  Spreadsheets have convenient formulas for doing this type of
@@ -110,29 +116,25 @@ of open, tested tools to fill this gap.
 If you have used _finance_ and find it useful, I would enjoy hearing
 about it!
 
-= FEATURES
+== FEATURES
 
 Currently implemented features include:
 
 * Uses the {http://flt.rubyforge.org/ flt} library to ensure precision decimal arithmetic in all calculations.
 * Fixed-rate mortgage amortization (30/360).
 * Interest rates
-* Various cash flow computations, such as NPV, IRR, and sum.
+* Various cash flow computations, such as NPV and IRR.
 * Adjustable rate mortgage amortization.
 * Payment modifications (i.e., how does paying an additional $75 per month affect the amortization?)
 
-= RESOURCES
+== RESOURCES
 
-This gem and related documentation is available through
-{https://rubygems.org/gems/finance RubyGems}.
+[RubyGems Page] {https://rubygems.org/gems/finance}
+[Source Code] {http://github.com/wkranec/finance}
+[Bug Tracker] {https://github.com/wkranec/finance/issues}
+[Google Group] {http://groups.google.com/group/finance-gem/topics?pli=1}
 
-Source code and bug tracking is available via
-{http://github.com/wkranec/finance github}.
-
-Additional documentation is available on the
-{https://github.com/wkranec/finance/wiki wiki}.
-
-= COPYRIGHT
+== COPYRIGHT
 
 This library is released under the terms of the LGPL license.
 
