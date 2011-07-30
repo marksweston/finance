@@ -11,6 +11,9 @@ module Finance
     # @note this attribute is mainly used in the case of mortgage amortization with no dates
     # @api public
     attr_accessor :period
+    # @return [Date] the date of the transaction
+    # @api public
+    attr_accessor :date
 
     # Set the cash value of the transaction
     # @return None

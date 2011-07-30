@@ -1,4 +1,5 @@
 require_relative 'decimal'
+require_relative 'rates'
 
 module Finance
   # Provides methods for working with cash flows (collections of transactions)
@@ -45,7 +46,23 @@ module Finance
       self.inject(:+)
     end
 
-    def xirr
+    def xirr(iterations=100)
+      rate, investment = 1.to_d, self[0].amount
+      iterations.times do
+        rate *= (1.to_d - self.xnpv(rate) / investment)
+      end
+      
+      Rate.new(rate, :apr, :compounds => :annually)
+    end
+
+    def xnpv(rate)
+      rate  = rate.to_d
+      start = self[0].date
+
+      self.inject(0) do |sum, t|
+        n = t.amount / ( (1 + rate) ** ((t.date-start) / 31536000.to_d)) # 365 * 86400
+        sum + n
+      end
     end
   end
 end
