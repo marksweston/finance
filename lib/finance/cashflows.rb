@@ -1,25 +1,53 @@
 require_relative 'decimal'
 require_relative 'rates'
 
+require 'bigdecimal'
+require 'bigdecimal/newton'
+include Newton
+
 module Finance
   # Provides methods for working with cash flows (collections of transactions)
   # @api public
   module Cashflow
+    # Base class for working with Newton's Method.
+    # @api private
+    class Function
+      values = {
+        eps: "1.0e-16",
+        one: "1.0",
+        two: "2.0",
+        ten: "10.0",
+        zero: "0.0"
+        }
+
+      values.each do |key, value|
+        define_method key do
+          BigDecimal.new value
+        end
+      end
+
+      def initialize(transactions, function)
+        @transactions = transactions
+        @function = function
+      end
+
+      def values(x)
+        value = @transactions.send(@function, x[0].to_d)
+        [ BigDecimal.new(value.to_s) ]
+      end
+    end
+
     # calculate the internal rate of return for a sequence of cash flows
     # @return [DecNum] the internal rate of return
     # @example
     #   [-4000,1200,1410,1875,1050].irr #=> 0.143
     # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
     # @api public
-    def irr(iterations=100)
-      self.collect! { |entry| entry.to_d }
-
-      rate, investment = 1.to_d, self[0]
-      iterations.times do
-        rate *= (1 - self.npv(rate) / investment)
-      end
-      
-      rate
+    def irr
+      func = Function.new(self, :npv)
+      rate = [ func.one ]
+      n = nlsolve( func, rate )
+      rate[0]
     end
 
     # calculate the net present value of a sequence of cash flows
@@ -47,12 +75,10 @@ module Finance
     end
 
     def xirr(iterations=100)
-      rate, investment = 1.to_d, self[0].amount
-      iterations.times do
-        rate *= (1.to_d - self.xnpv(rate) / investment)
-      end
-      
-      Rate.new(rate, :apr, :compounds => :annually)
+      func = Function.new(self, :xnpv)
+      rate = [ func.one ]
+      n = nlsolve( func, rate )
+      Rate.new(rate[0], :apr, :compounds => :annually)
     end
 
     def xnpv(rate)
