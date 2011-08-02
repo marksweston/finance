@@ -1,12 +1,21 @@
 require 'rubygems'
 require 'flt'
+include Flt
+
+DecNum.context.define_conversion_from(BigDecimal) do |x, context|
+  DecNum(x.to_s)
+end
+
+DecNum.context.define_conversion_to(BigDecimal) do |x|
+  BigDecimal.new(x.to_s)
+end
 
 class Numeric
   def to_d
-    if self.instance_of? Flt::DecNum
+    if self.instance_of? DecNum
       self
     else
-      Flt::DecNum self.to_s
+      DecNum self.to_s
     end
   end
 end
