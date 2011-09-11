@@ -1,3 +1,10 @@
+= Version 1.1.0
+11 Sep 2011
+
+* Added XNPV and XIRR functions, with basic testing.
+* Bugfix: Array#sum no longer collides with the Array#sum defined in Rails.
+* Bugfix: Numeric#amortize now correctly calls Finance::Amortization#new.
+
 = Version 1.0.0 
 20 Jul 2011
 
