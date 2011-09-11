@@ -50,6 +50,11 @@ module Finance
       rate[0]
     end
 
+    def method_missing(name, *args, &block)
+      return self.inject(:+) if name.to_s == "sum"
+      super
+    end
+
     # calculate the net present value of a sequence of cash flows
     # @return [DecNum] the net present value
     # @param [Numeric] rate the discount rate to be applied
@@ -68,12 +73,15 @@ module Finance
       total
     end
 
-    # @return [Numeric] the total value of a sequence of cash flows
+    # calculate the internal rate of return for a sequence of cash flows with dates
+    # @return [Rate] the internal rate of return
+    # @example
+    #   @transactions = []
+    #   @transactions << Transaction.new(-1000, :date => Time.new(1985,01,01))
+    #   @transactions << Transaction.new(  600, :date => Time.new(1990,01,01))
+    #   @transactions << Transaction.new(  600, :date => Time.new(1995,01,01))
+    #   @transactions.xirr(0.6).round(2) #=> Rate("0.024851", :apr, :compounds => :annually)
     # @api public
-    def sum
-      self.inject(:+)
-    end
-
     def xirr(iterations=100)
       func = Function.new(self, :xnpv)
       rate = [ func.one ]
@@ -81,6 +89,15 @@ module Finance
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
 
+    # calculate the net present value of a sequence of cash flows
+    # @return [DecNum]
+    # @example
+    #   @transactions = []
+    #   @transactions << Transaction.new(-1000, :date => Time.new(1985,01,01))
+    #   @transactions << Transaction.new(  600, :date => Time.new(1990,01,01))
+    #   @transactions << Transaction.new(  600, :date => Time.new(1995,01,01))
+    #   @transactions.xnpv(0.6).round(2) #=> -937.41
+    # @api public
     def xnpv(rate)
       rate  = rate.to_d
       start = self[0].date

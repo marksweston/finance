@@ -191,6 +191,6 @@ class Numeric
   # @see Amortization#new
   # @api public
   def amortize(*rates, &block)
-    amortization = Amortization.new(self, *rates, &block)
+    amortization = Finance::Amortization.new(self, *rates, &block)
   end
 end
