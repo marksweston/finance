@@ -89,6 +89,12 @@ module Finance
     #   @transactions.xirr(0.6) #=> Rate("0.024851", :apr, :compounds => :annually)
     # @api public
     def xirr(iterations=100)
+      # Make sure we have a valid sequence of cash flows.
+      positives, negatives = self.partition{ |t| t.amount >= 0 }
+      if positives.empty? || negatives.empty?
+        raise ArgumentError, "Calculation does not converge."
+      end
+
       func = Function.new(self, :xnpv)
       rate = [ func.one ]
       n = nlsolve( func, rate )

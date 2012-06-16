@@ -28,6 +28,7 @@ class TestCashflows < Test::Unit::TestCase
 
     should "have an Internal Rate of Return" do
       assert_equal D("0.024851"), @xactions.xirr.effective.round(6)
+      assert_raises(ArgumentError) { @xactions[1,2].xirr }
     end
 
     should "have a Net Present Value" do
