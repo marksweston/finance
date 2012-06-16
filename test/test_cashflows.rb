@@ -11,7 +11,9 @@ class TestCashflows < Test::Unit::TestCase
   context "an array of numeric cashflows" do
     should "have an Internal Rate of Return" do
       assert_equal D("0.143"), [-4000,1200,1410,1875,1050].irr.round(3)
+      assert_raises(ArgumentError) { [10,20,30].irr }
     end
+
     should "have a Net Present Value" do
       assert_equal D("49.211"), [-100.0, 60, 60, 60].npv(0.1).round(3)
     end

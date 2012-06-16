@@ -44,6 +44,12 @@ module Finance
     # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
     # @api public
     def irr
+      # Make sure we have a valid sequence of cash flows.
+      positives, negatives = self.partition{ |i| i >= 0 }
+      if positives.empty? || negatives.empty?
+        raise ArgumentError, "Calculation does not converge."
+      end
+
       func = Function.new(self, :npv)
       rate = [ func.one ]
       n = nlsolve( func, rate )
