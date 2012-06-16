@@ -1,3 +1,9 @@
+= Version 1.1.2
+16 Jun 2012
+
+* Bugfix: Array#irr and Array#xirr check for a valid sequence of cash flows.
+* Bugfix: Integer#months and Integer#years no longer collide with Rails methods.
+
 = Version 1.1.0
 11 Sep 2011
 
