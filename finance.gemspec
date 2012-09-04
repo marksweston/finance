@@ -3,7 +3,7 @@ require 'rake'
 
 SPEC = Gem::Specification.new do |s|
 	s.name = "finance"
-	s.version = "1.1.2"
+	s.version = "1.1.3"
 	s.author = "Bill Kranec"
 	s.email = "wkranec@gmail.com"
 	s.platform = Gem::Platform::RUBY

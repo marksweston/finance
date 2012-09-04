@@ -1,5 +1,6 @@
 require 'finance/cashflows'
 require 'finance/interval'
+require 'finance/effective_interest_rate'
 
 # The *Finance* module adheres to the following conventions for
 # financial calculations:
