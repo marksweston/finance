@@ -96,6 +96,30 @@ You can also increase your payment to a specific amount:
 
   >> extra_payments_2 = 250000.amortize(rate){ -1500 }
 
+== Effective Interest Rate
+
+Implementation of Execl's RATE function
+
+  RATE  RATE(NPER, PMT, PV, FV, type, guess)  
+  Returns the constant interest rate per period of an annuity. 
+  => NPER is the total number of periods, during which payments are made (payment period). 
+  => PMT is the constant payment (annuity) paid during each period. 
+  => PV is the cash value in the sequence of payments. 
+  => FV (optional) is the future value, which is reached at the end of the periodic payments. 
+  => Type (optional) defines whether the payment is due at the beginning (1) or the end (0) of a period. 
+  => Guess (optional) determines the estimated value of the interest with iterative calculation.
+  see test/test_effective_interest_rate.rb for examples
+  adapted from Java code found here: http://www.pcpros.com/software/programming/java/java.shtml
+  Example:
+  Finance::EffectiveInterestRate.calc_effective_interest_rate(360, -1433.39, 200000)
+
+== Financial Payments with annual fees
+
+This will return identical results that Finance::Amortization will given annual_fee = 0
+Simply adds ability to use annual_fee
+
+    Finance::EffectiveInterestRate.calc_payment(principal, rate, periods, annual_fee = 0)
+
 == ABOUT
 
 I started developing _finance_ while analyzing mortgages as a personal
