@@ -16,17 +16,21 @@ class TestEffectiveInterestRate < Test::Unit::TestCase
     # end
 
     should "have a annual percetage rate of 7.75" do
-    	res = Finance::EffectiveInterestRate.calc_effective_interest_rate(360, -1433.39, 200000)
+      res = Finance::EffectiveInterestRate.calc_effective_interest_rate(360, -1433.39, 200000)
       assert_equal res * 12, 7.754091459155666
     end
 
     should "have a payment of 1411.01" do
-    	res = Finance::EffectiveInterestRate.calc_payment(200000, 0.0750, 360)
-    	assert_equal res, -1398.4290171055532
-    	res = Finance::EffectiveInterestRate.calc_payment(200000, 0.0750, 360, 60)
-    	assert_equal res, -1411.0148782595031
+      res = Finance::EffectiveInterestRate.calc_payment(200000, 0.0750, 360)
+      assert_equal res, -1398.4290171055532
+      res = Finance::EffectiveInterestRate.calc_payment(200000, 0.0750, 360, 60)
+      assert_equal res, -1411.0148782595031
     end
     
+    should "have a nper of 360" do
+      assert_equal Finance::EffectiveInterestRate.calc_nper(0.0750/12, -1398.43, 200000), 360
+    end
+
   end
 end
 

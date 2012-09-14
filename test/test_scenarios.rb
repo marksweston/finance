@@ -122,7 +122,7 @@ class TestAprScenarios < Test::Unit::TestCase
       228  $1,648.16 
       234  $1,629.12)).each do |arr|
 
-      should "have payments of #{arr.last} for load term of #{arr.first} months" do
+      should "have payments of #{arr.last} for loan term of #{arr.first} months" do
         rate = Rate.new(@interest_rate, :apr, :duration => arr.first.to_i)
         amort = Amortization.new(@loan_amount, rate)
         assert_equal amort.payment.abs.to_s, arr.last
@@ -171,6 +171,40 @@ class TestAprScenarios < Test::Unit::TestCase
         # res = Finance::EffectiveInterestRate.calc_effective_interest_rate(360, -1433.39, 200000)
         rate = Finance::EffectiveInterestRate.calc_effective_interest_rate(@term_in_months, payment, @loan_amount)
         assert_equal eir, (rate * 12).round(2)
+      end
+    end
+  end
+
+  context "Loan Term (NPER)" do
+    setup do
+      @loan_fees        = 0.0
+      @loan_amount      = 200000
+      @interest_rate    = 0.0750
+    end
+
+    break_up(%(120   $2,374.04 
+      126  $2,298.20 
+      132  $2,229.60 
+      138  $2,167.28 
+      144  $2,110.45 
+      150  $2,058.46 
+      156  $2,010.74 
+      162  $1,966.82 
+      168  $1,926.29 
+      174  $1,888.79 
+      180  $1,854.02 
+      186  $1,821.72 
+      192  $1,791.66 
+      198  $1,763.61 
+      204  $1,737.42 
+      210  $1,712.91 
+      216  $1,689.95 
+      222  $1,668.40 
+      228  $1,648.16 
+      234  $1,629.12)).each do |arr|
+
+      should "have loan term (nper) of #{arr.first} for payments #{arr.first}" do
+        assert_equal Finance::EffectiveInterestRate.calc_nper(@interest_rate/12, -(arr.last.to_f), 200000), arr.first.to_i
       end
     end
   end

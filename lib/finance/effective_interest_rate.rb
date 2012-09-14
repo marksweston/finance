@@ -72,8 +72,29 @@ module Finance
     # This will return identical results that Finance::Amortization will given annual_fee = 0
     # Simply adds ability to use annual_fee
     # see test/test_effective_interest_rate.rb for examples
+    # Finance::EffectiveInterestRate.calc_payment(200000, 0.0750, 360)
     def self.calc_payment(principal, rate, periods, annual_fee = 0)
       -(rate/12)*((annual_fee*periods/12)+principal)/(1-(1+rate/12) ** -periods)
+    end
+
+    # Calculates loan term based on rate, payment, loan amount
+    # Finance::EffectiveInterestRate.calc_nper(0.0750/12, -1398.43, 200000) 
+    # = 360
+    # adapted from http://svn.apache.org/repos/asf/poi/trunk/src/java/org/apache/poi/ss/formula/functions/FinanceLib.java
+    def self.calc_nper(rate, payment, pv, fv=0, type=0) 
+      rate = rate.to_d; payment = payment.to_d; pv = pv.to_d; fv = fv.to_d
+      retval = 0.to_d;
+      if rate == 0
+        retval = -1 * (fv + pv) / payment
+      else 
+        r1 = rate + 1
+        ryr = (type == 1 ? r1 : 1) * payment / rate
+        a1 = ((ryr - fv) < 0) ? Math.log(fv - ryr) : Math.log(ryr - fv)
+        a2 = ((ryr - fv) < 0) ? Math.log(-pv - ryr) : Math.log(pv + ryr)
+        a3 = Math.log(r1)
+        retval = (a1 - a2) / a3
+      end
+      return retval.round;
     end
 
   end
