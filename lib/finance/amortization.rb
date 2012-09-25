@@ -135,7 +135,7 @@ module Finance
       @block     = block
       
       # compute the total duration from all of the rates.
-      @periods = (rates.collect { |r| r.duration }).sum
+      @periods = (rates.collect { |r| r.duration }).sum.to_i
       @period  = 0
 
       compute

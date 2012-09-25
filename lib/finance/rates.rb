@@ -58,6 +58,7 @@ module Finance
                  when :annually     then Flt::DecNum 1
                  when :continuously then Flt::DecNum.infinity
                  when :daily        then Flt::DecNum 365
+                 # when :monthly      then '12.0'.to_d
                  when :monthly      then Flt::DecNum 12
                  when :quarterly    then Flt::DecNum 4
                  when :semiannually then Flt::DecNum 2
@@ -138,7 +139,7 @@ module Finance
       rate, periods = rate.to_d, periods.to_d
 
       if periods.infinite?
-        rate.exp - 1
+        Math.exp(rate) - 1
       else
         (1 + rate / periods) ** periods - 1
       end
@@ -153,10 +154,10 @@ module Finance
     # @see http://www.miniwebtool.com/nominal-interest-rate-calculator/
     # @api public
     def Rate.to_nominal(rate, periods)
-      rate, periods = rate.to_d, periods.to_d
+      rate, periods = rate.to_f, periods.to_f
 
       if periods.infinite?
-        (rate + 1).log
+        Math.log(rate + 1)
       else
         periods * ((1 + rate) ** (1 / periods) - 1)
       end
