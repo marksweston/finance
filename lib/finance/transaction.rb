@@ -24,7 +24,7 @@ module Finance
     #   t.amount #=> 750
     # @api public
     def amount=(value)
-      @amount = value.to_d
+      @amount = Flt::DecNum.new(value.to_d)
     end
 
     # @return [DecNum] the difference between the original transaction
