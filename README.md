@@ -24,8 +24,8 @@ for all of the examples below, we'll assume that you have done this.
 You are interested in borrowing $250,000 under a 30 year, fixed-rate
 loan with a 4.25% APR.
 
-  >> rate = Rate.new(0.0425, :apr, :duration => 30.years)
-  >> amortization = 250000.amortize(rate)
+  >> rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
+  >> amortization = Amortization.new(250000, rate)
 
 Find the standard monthly payment:
 
