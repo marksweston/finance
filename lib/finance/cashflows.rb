@@ -32,7 +32,7 @@ module Finance
       end
 
       def values(x)
-        value = @transactions.send(@function, x[0].to_d)
+        value = @transactions.send(@function, Flt::DecNum.new(x[0].to_d))
         [ BigDecimal.new(value.to_s) ]
       end
     end
@@ -69,9 +69,9 @@ module Finance
     # @see http://en.wikipedia.org/wiki/Net_present_value
     # @api public
     def npv(rate)
-      self.collect! { |entry| entry.to_d }
+      self.collect! { |entry| Flt::DecNum.new(entry.to_d) }
 
-      rate, total = rate.to_d, 0.to_d
+      rate, total = Flt::DecNum.new(rate.to_d), Flt::DecNum.new(0.to_d)
       self.each_with_index do |cashflow, index|
         total += cashflow / (1 + rate) ** index
       end
@@ -111,11 +111,11 @@ module Finance
     #   @transactions.xnpv(0.6).round(2) #=> -937.41
     # @api public
     def xnpv(rate)
-      rate  = rate.to_d
+      rate  = Flt::DecNum.new(rate.to_d)
       start = self[0].date
 
       self.inject(0) do |sum, t|
-        n = t.amount / ( (1 + rate) ** ((t.date-start) / 31536000.to_d)) # 365 * 86400
+        n = t.amount / ( (1 + rate) ** ((t.date-start) / Flt::DecNum.new(31536000.to_d))) # 365 * 86400
         sum + n
       end
     end
