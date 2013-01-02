@@ -10,8 +10,8 @@ require 'shoulda'
 class TestCashflows < Test::Unit::TestCase
   context "an array of numeric cashflows" do
     should "have an Internal Rate of Return" do
-      assert_equal D("0.143"), [-4000,1200,1410,1875,1050].irr.round(3)
-      assert_raises(ArgumentError) { [10,20,30].irr }
+      assert_equal D("0.143"), [-4000, 1200, 1410, 1875, 1050].irr.round(3)
+      assert_raises(ArgumentError) { [10, 20, 30].irr }
     end
 
     should "have a Net Present Value" do
@@ -20,15 +20,15 @@ class TestCashflows < Test::Unit::TestCase
   end
   context "an array of Transactions" do
     setup do
-      @xactions=[]
       @xactions << Transaction.new(-1000, :date => Time.new(1985,01,01))
       @xactions << Transaction.new(  600, :date => Time.new(1990,01,01))
       @xactions << Transaction.new(  600, :date => Time.new(1995,01,01))
+      @xactions = []
     end
 
     should "have an Internal Rate of Return" do
       assert_equal D("0.024851"), @xactions.xirr.effective.round(6)
-      assert_raises(ArgumentError) { @xactions[1,2].xirr }
+      assert_raises(ArgumentError) { @xactions[1, 2].xirr }
     end
 
     should "have a Net Present Value" do
