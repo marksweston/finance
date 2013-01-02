@@ -20,10 +20,10 @@ class TestCashflows < Test::Unit::TestCase
   end
   context "an array of Transactions" do
     setup do
-      @xactions << Transaction.new(-1000, :date => Time.new(1985,01,01))
-      @xactions << Transaction.new(  600, :date => Time.new(1990,01,01))
-      @xactions << Transaction.new(  600, :date => Time.new(1995,01,01))
       @xactions = []
+      @xactions << Transaction.new(-1000, :date => Time.new(1985, 1, 1))
+      @xactions << Transaction.new(  600, :date => Time.new(1990, 1, 1))
+      @xactions << Transaction.new(  600, :date => Time.new(1995, 1, 1))
     end
 
     should "have an Internal Rate of Return" do
