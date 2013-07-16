@@ -8,14 +8,14 @@ module Finance
   #   example uses the amortize method for the Numeric class.  The second
   #   calls Amortization.new directly.
   # @example Borrow $250,000 under a 30 year, fixed-rate loan with a 4.25% APR
-  #   rate = Rate.new(0.0425, :apr, :duration => 30.years)
+  #   rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
   #   amortization = 250000.amortize(rate)
   # @example Borrow $250,000 under a 30 year, adjustable rate loan, with an APR starting at 4.25%, and increasing by 1% every five years
   #   values = %w{ 0.0425 0.0525 0.0625 0.0725 0.0825 0.0925 }
-  #   rates = values.collect { |value| Rate.new( value, :apr, :duration = 5.years ) }
+  #   rates = values.collect { |value| Rate.new( value, :apr, :duration = (5 * 12) ) }
   #   arm = Amortization.new(250000, *rates)
   # @example Borrow $250,000 under a 30 year, fixed-rate loan with a 4.25% APR, but pay $150 extra each month
-  #   rate = Rate.new(0.0425, :apr, :duration => 30.years)
+  #   rate = Rate.new(0.0425, :apr, :duration => (5 * 12))
   #   extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
   # @api public
   class Amortization
@@ -42,7 +42,7 @@ module Finance
 
     # @return [Array] the amount of any additional payments in each period
     # @example
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   amt = 300000.amortize(rate){ |payment| payment.amount-100}
     #   amt.additional_payments #=> [DecNum('-100.00'), DecNum('-100.00'), ... ]
     # @api public
@@ -63,8 +63,8 @@ module Finance
 
       pmt = Payment.new(amount, :period => @period)
       if @block then pmt.modify(&@block) end
-        
-      rate.duration.times do
+
+      rate.duration.to_i.times do
         # Do this first in case the balance is zero already.
         if @balance.zero? then break end
 
@@ -78,7 +78,7 @@ module Finance
         if pmt.amount.abs > @balance then pmt.amount = -@balance end
         @transactions << pmt.dup
         @balance += pmt.amount
-        
+
         @period += 1
       end
     end
@@ -111,11 +111,11 @@ module Finance
 
     # @return [Integer] the time required to pay off the loan, in months
     # @example In most cases, the duration is equal to the total duration of all rates
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   amt = 300000.amortize(rate)
     #   amt.duration #=> 360
     # @example Extra payments may reduce the duration
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   amt = 300000.amortize(rate){ |payment| payment.amount-100}
     #   amt.duration #=> 319
     # @api public
@@ -130,10 +130,10 @@ module Finance
     # @param [Proc] block
     # @api public
     def initialize(principal, *rates, &block)
-      @principal = principal.to_d
+      @principal = Flt::DecNum.new(principal.to_s)
       @rates     = rates
       @block     = block
-      
+
       # compute the total duration from all of the rates.
       @periods = (rates.collect { |r| r.duration }).sum
       @period  = 0
@@ -148,11 +148,11 @@ module Finance
 
     # @return [Array] the amount of interest charged in each period
     # @example find the total cost of interest for a loan
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   amt = 300000.amortize(rate)
     #   amt.interest.sum #=> DecNum('200163.94')
     # @example find the total interest charges in the first six months
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   amt = 300000.amortize(rate)
     #   amt.interest[0,6].sum #=> DecNum('5603.74')
     # @api public
@@ -166,7 +166,7 @@ module Finance
     # @param [Integer] periods the number of periods needed for repayment
     # @note in most cases, you will probably want to use rate.monthly when calling this function outside of an Amortization instance.
     # @example
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   rate.duration #=> 360
     #   Amortization.payment(200000, rate.monthly, rate.duration) #=> DecNum('-926.23')
     # @see http://en.wikipedia.org/wiki/Amortization_calculator
@@ -177,7 +177,7 @@ module Finance
 
     # @return [Array] the amount of the payment in each period
     # @example find the total payments for a loan
-    #   rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    #   rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     #   amt = 300000.amortize(rate)
     #   amt.payments.sum #=> DecNum('-500163.94')
     # @api public
