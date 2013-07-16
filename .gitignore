@@ -3,3 +3,4 @@ doc/
 coverage/
 *.gem
 Gemfile.lock
+*.swp
