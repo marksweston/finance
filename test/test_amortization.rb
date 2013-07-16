@@ -1,11 +1,4 @@
-require_relative '../lib/finance/amortization.rb'
-require_relative '../lib/finance/interval.rb'
-require_relative '../lib/finance/rates.rb'
-include Finance
-
-require 'flt/d'
-require 'minitest/autorun'
-require 'minitest/spec'
+require_relative 'test_helper'
 
 # @see http://tinyurl.com/6zroqvd for detailed calculations for the
 #   examples in these unit tests.

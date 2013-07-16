@@ -1,11 +1,4 @@
-require_relative '../lib/finance/cashflows.rb'
-require_relative '../lib/finance/rates.rb'
-require_relative '../lib/finance/transaction.rb'
-include Finance
-
-require 'flt/d'
-require 'minitest/autorun'
-require 'minitest/spec'
+require_relative 'test_helper'
 
 describe "Cashflows" do
   describe "an array of numeric cashflows" do

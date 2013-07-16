@@ -1,7 +1,4 @@
-require_relative '../lib/finance/interval.rb'
-
-require 'minitest/autorun'
-require 'minitest/spec'
+require_relative 'test_helper'
 
 describe "Interval" do
   describe "a time interval" do

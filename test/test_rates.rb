@@ -1,10 +1,4 @@
-require_relative '../lib/finance/rates.rb'
-include Finance
-
-require 'flt'
-require 'flt/d'
-require 'minitest/autorun'
-require 'minitest/spec'
+require_relative 'test_helper'
 
 describe "Rates" do
   describe "an interest rate" do
