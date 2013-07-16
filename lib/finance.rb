@@ -1,3 +1,4 @@
+require 'finance/decimal'
 require 'finance/cashflows'
 
 # The *Finance* module adheres to the following conventions for

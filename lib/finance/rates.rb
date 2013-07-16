@@ -11,7 +11,7 @@ module Finance
     TYPES = { :apr       => "effective",
               :apy       => "effective",
               :effective => "effective",
-              :nominal   => "nominal" 
+              :nominal   => "nominal"
             }
 
     # @return [Integer] the duration for which the rate is valid, in months
@@ -98,7 +98,7 @@ module Finance
 
       # Set the rate in the proper way, based on the value of type.
       begin
-        send("#{TYPES.fetch(type)}=", Flt::DecNum.new(rate.to_d))
+        send("#{TYPES.fetch(type)}=", Flt::DecNum.new(rate.to_s))
       rescue KeyError
         raise ArgumentError, "type must be one of #{TYPES.keys.join(', ')}", caller
       end
@@ -135,7 +135,7 @@ module Finance
     #   Rate.to_effective(0.05, 4) #=> DecNum('0.05095')
     # @api public
     def Rate.to_effective(rate, periods)
-      rate, periods = Flt::DecNum.new(rate.to_d), Flt::DecNum.new(periods.to_d)
+      rate, periods = Flt::DecNum.new(rate.to_s), Flt::DecNum.new(periods.to_s)
 
       if periods.infinite?
         rate.exp - 1
@@ -153,7 +153,7 @@ module Finance
     # @see http://www.miniwebtool.com/nominal-interest-rate-calculator/
     # @api public
     def Rate.to_nominal(rate, periods)
-      rate, periods = Flt::DecNum.new(rate.to_d), Flt::DecNum.new(periods.to_d)
+      rate, periods = Flt::DecNum.new(rate.to_s), Flt::DecNum.new(periods.to_s)
 
       if periods.infinite?
         (rate + 1).log

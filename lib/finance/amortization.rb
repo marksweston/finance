@@ -130,7 +130,7 @@ module Finance
     # @param [Proc] block
     # @api public
     def initialize(principal, *rates, &block)
-      @principal = Flt::DecNum.new(principal.to_d)
+      @principal = Flt::DecNum.new(principal.to_s)
       @rates     = rates
       @block     = block
 
