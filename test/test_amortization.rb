@@ -9,7 +9,7 @@ describe "Amortization" do
 
   describe "a fixed-rate amortization of 200000 at 3.75% over 30 years" do
     before(:all) do
-      @rate = Rate.new(0.0375, :apr, :duration => 30.years)
+      @rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
       @principal = D(200000)
       @std = Amortization.new(@principal, @rate)
     end
@@ -53,7 +53,7 @@ describe "Amortization" do
     before(:all) do
       @rates = []
       0.upto 9 do |adj|
-        @rates << Rate.new(0.0375 + (D('0.01') * adj), :apr, :duration => 3.years)
+        @rates << Rate.new(0.0375 + (D('0.01') * adj), :apr, :duration => (3 * 12))
       end
       @principal = D(200000)
       @arm = Amortization.new(@principal, *@rates)
@@ -108,7 +108,7 @@ describe "Amortization" do
 
   describe "a fixed-rate amortization of 200000 at 3.75% over 30 years, where an additional 100 is paid each month" do
     before(:all) do
-      @rate = Rate.new(0.0375, :apr, :duration => 30.years)
+      @rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
       @principal = D(200000)
       @exp = Amortization.new(@principal, @rate){ |period| period.payment - 100 }
     end
@@ -149,14 +149,14 @@ end
 
 describe "Numeric Method" do
   it 'works with simple invocation' do
-    rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     amt_method = 300000.amortize(rate)
     amt_class  = Amortization.new(300000, rate)
     assert_equal amt_method, amt_class
   end
 
   it 'works with block invocation' do
-    rate = Rate.new(0.0375, :apr, :duration => 30.years)
+    rate = Rate.new(0.0375, :apr, :duration => (30 * 12))
     amt_method = 300000.amortize(rate){ |period| period.payment-300 }
     amt_class  = Amortization.new(300000, rate){ |period| period.payment-300 }
     assert_equal amt_method, amt_class
