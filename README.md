@@ -53,7 +53,7 @@ For example, we can look at an amortization of $250000, where the APR
 starts at 4.25%, and increases by 1% every five years.
 
   >> values = %w{ 0.0425 0.0525 0.0625 0.0725 0.0825 0.0925 }
-  >> rates = values.collect { |value| Rate.new( value, :apr, :duration = 5.years ) }
+  >> rates = values.collect { |value| Rate.new( value, :apr, :duration => (5  * 12) }
   >> arm = Amortization.new(250000, *rates)
 
 Since we are looking at an ARM, there is no longer a single "payment" value.
@@ -77,7 +77,7 @@ Last, but not least, you may pass a block when creating an Amortization
 which returns a modified monthly payment.  For example, to increase your
 payment by $150, do:
 
-  >> rate = Rate.new(0.0425, :apr, :duration => 30.years)
+  >> rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
   >> extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
 
 Disregarding the block, we have used the same parameters as the first
