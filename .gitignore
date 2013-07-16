@@ -4,3 +4,4 @@ coverage/
 *.gem
 Gemfile.lock
 *.swp
+.bundle
