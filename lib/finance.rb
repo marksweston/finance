@@ -1,5 +1,5 @@
+require 'finance/decimal'
 require 'finance/cashflows'
-require 'finance/interval'
 
 # The *Finance* module adheres to the following conventions for
 # financial calculations:

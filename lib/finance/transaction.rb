@@ -24,7 +24,7 @@ module Finance
     #   t.amount #=> 750
     # @api public
     def amount=(value)
-      @amount = value.to_d
+      @amount = Flt::DecNum.new(value.to_s)
     end
 
     # @return [DecNum] the difference between the original transaction
@@ -51,7 +51,7 @@ module Finance
     def initialize(amount, opts={})
       @amount = amount
       @original = amount
-      
+
       # Set optional attributes..
       opts.each do |key, value|
         send("#{key}=", value)
@@ -111,7 +111,7 @@ module Finance
       "Interest(#{@amount})"
     end
   end
-  
+
   # Represent a loan payment as a Transaction
   # @see Transaction
   class Payment < Transaction
