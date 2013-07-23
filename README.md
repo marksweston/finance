@@ -1,104 +1,104 @@
-= FINANCE
+# FINANCE
 
 a library for financial modelling in Ruby.
 
-== INSTALL
+## INSTALL
 
-  $ sudo gem install finance
+    $ sudo gem install finance
 
-== OVERVIEW
+## OVERVIEW
 
-=== GETTING STARTED
+### GETTING STARTED
 
-  >> require 'finance'
+    >> require 'finance'
 
 *Note:* As of version 1.0.0, the entire library is contained under the
 Finance namespace.  Existing code will not work unless you add:
 
-  >> include Finance
+    >> include Finance
 
 for all of the examples below, we'll assume that you have done this.
 
-=== AMORTIZATION
+### AMORTIZATION
 
 You are interested in borrowing $250,000 under a 30 year, fixed-rate
 loan with a 4.25% APR.
 
-  >> rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
-  >> amortization = Amortization.new(250000, rate)
+    >> rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
+    >> amortization = Amortization.new(250000, rate)
 
 Find the standard monthly payment:
 
-  >> amortization.payment
-  => DecNum('-1229.91')
+    >> amortization.payment
+    => DecNum('-1229.91')
 
 Find the total cost of the loan:
 
-  >> amortization.payments.sum
-  => DecNum('-442766.55')
+    >> amortization.payments.sum
+    => DecNum('-442766.55')
 
 How much will you pay in interest?
 
-  >> amortization.interest.sum
-  => DecNum('192766.55')
+    >> amortization.interest.sum
+    => DecNum('192766.55')
 
 How much interest in the first six months?
 
-  >> amortization.interest[0,6].sum
-  => DecNum('5294.62')
+    >> amortization.interest[0,6].sum
+    => DecNum('5294.62')
 
 If your loan has an adjustable rate, no problem.  You can pass an
 arbitrary number of rates, and they will be used in the amortization.
 For example, we can look at an amortization of $250000, where the APR
 starts at 4.25%, and increases by 1% every five years.
 
-  >> values = %w{ 0.0425 0.0525 0.0625 0.0725 0.0825 0.0925 }
-  >> rates = values.collect { |value| Rate.new( value, :apr, :duration => (5  * 12) }
-  >> arm = Amortization.new(250000, *rates)
+    >> values = %w{ 0.0425 0.0525 0.0625 0.0725 0.0825 0.0925 }
+    >> rates = values.collect { |value| Rate.new( value, :apr, :duration => (5  * 12) }
+    >> arm = Amortization.new(250000, *rates)
 
 Since we are looking at an ARM, there is no longer a single "payment" value.
 
-  >> arm.payment
-  => nil
+    >> arm.payment
+    => nil
 
 But we can look at the different payments over time.
 
-  >> arm.payments.uniq
-  => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), ... snipped ... ]
+    >> arm.payments.uniq
+    => [DecNum('-1229.85'), DecNum('-1360.41'), DecNum('-1475.65'), DecNum('-1571.07'), ... snipped ... ]
 
 The other methods previously discussed can be accessed in the same way:
 
-  >> arm.interest.sum
-  => DecNum('287515.45')
-  >> arm.payments.sum
-  => DecNum('-537515.45')
+    >> arm.interest.sum
+    => DecNum('287515.45')
+    >> arm.payments.sum
+    => DecNum('-537515.45')
 
 Last, but not least, you may pass a block when creating an Amortization
 which returns a modified monthly payment.  For example, to increase your
 payment by $150, do:
 
-  >> rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
-  >> extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
+    >> rate = Rate.new(0.0425, :apr, :duration => (30 * 12))
+    >> extra_payments = 250000.amortize(rate){ |period| period.payment - 150 }
 
 Disregarding the block, we have used the same parameters as the first
 example.  Notice the difference in the results:
 
-  >> amortization.payments.sum
-  => DecNum('-442745.98')
-  >> extra_payments.payments.sum
-  => DecNum('-400566.24')
-  >> amortization.interest.sum
-  => DecNum('192745.98')
-  >> extra_payments.interest.sum
-  => DecNum('150566.24')
+    >> amortization.payments.sum
+    => DecNum('-442745.98')
+    >> extra_payments.payments.sum
+    => DecNum('-400566.24')
+    >> amortization.interest.sum
+    => DecNum('192745.98')
+    >> extra_payments.interest.sum
+    => DecNum('150566.24')
 
 You can also increase your payment to a specific amount:
 
-  >> extra_payments_2 = 250000.amortize(rate){ -1500 }
+    >> extra_payments_2 = 250000.amortize(rate){ -1500 }
 
-== ABOUT
+## ABOUT
 
-I started developing _finance_ while analyzing mortgages as a personal
+I started developing `finance` while analyzing mortgages as a personal
 project.  Spreadsheets have convenient formulas for doing this type of
 work, until you want to do something semi-complex (like ARMs or extra
 payments), at which point you need to create your own amortization
@@ -110,13 +110,13 @@ have as a gem.
 More broadly, I believe there are many calculations that are necessary
 for the effective management of personal finances, but are difficult
 (or impossible) to do with spreadsheets or other existing open source
-tools.  My hope is that the _finance_ library will grow to provide a set
+tools.  My hope is that the `finance` library will grow to provide a set
 of open, tested tools to fill this gap.
 
-If you have used _finance_ and find it useful, I would enjoy hearing
+If you have used `finance` and find it useful, I would enjoy hearing
 about it!
 
-== FEATURES
+## FEATURES
 
 Currently implemented features include:
 
@@ -127,14 +127,14 @@ Currently implemented features include:
 * Adjustable rate mortgage amortization.
 * Payment modifications (i.e., how does paying an additional $75 per month affect the amortization?)
 
-== RESOURCES
+## RESOURCES
 
 [RubyGems Page] {https://rubygems.org/gems/finance}
 [Source Code] {http://github.com/wkranec/finance}
 [Bug Tracker] {https://github.com/wkranec/finance/issues}
 [Google Group] {http://groups.google.com/group/finance-gem/topics?pli=1}
 
-== COPYRIGHT
+## COPYRIGHT
 
 This library is released under the terms of the LGPL license.
 
