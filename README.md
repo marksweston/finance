@@ -120,7 +120,7 @@ about it!
 
 Currently implemented features include:
 
-* Uses the {http://flt.rubyforge.org/ flt} library to ensure precision decimal arithmetic in all calculations.
+* Uses the [flt](http://flt.rubyforge.org/) library to ensure precision decimal arithmetic in all calculations.
 * Fixed-rate mortgage amortization (30/360).
 * Interest rates
 * Various cash flow computations, such as NPV and IRR.
@@ -129,10 +129,10 @@ Currently implemented features include:
 
 ## RESOURCES
 
-[RubyGems Page] {https://rubygems.org/gems/finance}
-[Source Code] {http://github.com/wkranec/finance}
-[Bug Tracker] {https://github.com/wkranec/finance/issues}
-[Google Group] {http://groups.google.com/group/finance-gem/topics?pli=1}
+* [RubyGems Page](https://rubygems.org/gems/finance)
+* [Source Code](http://github.com/wkranec/finance)
+* [Bug Tracker](https://github.com/wkranec/finance/issues)
+* [Google Group](http://groups.google.com/group/finance-gem/topics?pli=1)
 
 ## COPYRIGHT
 
