@@ -3,7 +3,7 @@ require 'rake'
 
 SPEC = Gem::Specification.new do |s|
   s.name = "finance"
-  s.version = "1.1.2"
+  s.version = "2.0.0"
   s.author = "Bill Kranec"
   s.email = "wkranec@gmail.com"
   s.platform = Gem::Platform::RUBY
@@ -15,8 +15,8 @@ SPEC = Gem::Specification.new do |s|
   s.add_dependency 'flt', '>=1.3.0'
   s.add_development_dependency 'minitest', '>= 4.7.5'
   s.add_development_dependency 'activesupport', '>= 4.0.0'
-  s.files = FileList['README', 'COPYING', 'COPYING.LESSER', 'HISTORY', 'lib/**/*.rb', 'test/**/*.rb'].to_a
+  s.files = FileList['README.md', 'COPYING', 'COPYING.LESSER', 'HISTORY', 'lib/**/*.rb', 'test/**/*.rb'].to_a
 
   s.has_rdoc = true
-  s.extra_rdoc_files = ['README', 'COPYING', 'COPYING.LESSER', 'HISTORY']
+  s.extra_rdoc_files = ['README.md', 'COPYING', 'COPYING.LESSER', 'HISTORY']
 end

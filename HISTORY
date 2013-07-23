@@ -1,3 +1,11 @@
+= Version 2.0.0
+23 Jul 2013
+
+* Removed Integer#months, Integer#years, and replaced Numeric#to_d by Numeric#to_s in the interest of Rails compatibility.
+* Converted unit tests from the shoulda framework to minitest.
+* Removed octal numbers in test_cashflow.rb
+* Thanks to @thadd, @bramswenson, and @xpe for their contributions to this release!
+
 = Version 1.1.2
 16 Jun 2012
 
