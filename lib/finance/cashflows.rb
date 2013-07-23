@@ -52,7 +52,7 @@ module Finance
 
       func = Function.new(self, :npv)
       rate = [ func.one ]
-      n = nlsolve( func, rate )
+      nlsolve( func, rate )
       rate[0]
     end
 
@@ -97,7 +97,7 @@ module Finance
 
       func = Function.new(self, :xnpv)
       rate = [ func.one ]
-      n = nlsolve( func, rate )
+      nlsolve( func, rate )
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
 
