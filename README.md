@@ -6,6 +6,17 @@ a library for financial modelling in Ruby.
 
     $ sudo gem install finance
 
+## IMPORTANT CHANGES
+
+Contributions by [@thadd](https://github.com/thadd) and
+[bramswenson](https://github.com/bramswenson) have made the `finance`
+library fully compatible with rails, at the cost of the `#years` and
+`#months` convenience methods on `Integer`, as well as the `#to_d` method for
+converting `Numeric`s into `DecNum`s.  These methods have been removed, due to
+conflicts with existing rails methods.
+
+Correspondingly, `finance` has been bumped up to version 2.0.
+
 ## OVERVIEW
 
 ### GETTING STARTED
