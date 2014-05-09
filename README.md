@@ -30,6 +30,17 @@ Finance namespace.  Existing code will not work unless you add:
 
 for all of the examples below, we'll assume that you have done this.
 
+### CONFIGURATION
+
+In `config/initializers/finance.rb` Finance allows to set tolerance (eps) and default guess for IRR and XIRR calculations, such as:
+
+```ruby
+Finance.configure do |config|
+  config.eps = '1.0e-12'
+  config.guess = 0.5
+end
+```
+
 ### AMORTIZATION
 
 You are interested in borrowing $250,000 under a 30 year, fixed-rate
@@ -106,6 +117,18 @@ example.  Notice the difference in the results:
 You can also increase your payment to a specific amount:
 
     >> extra_payments_2 = 250000.amortize(rate){ -1500 }
+
+### IRR and XIRR
+
+```ruby
+guess = 0.1
+transactions = []
+transactions << Transaction.new(-10000, date: '2010-01-01'.to_time(:utc))
+transactions << Transaction.new(123000, date: '2012-01-01'.to_time(:utc))
+transactions.xirr(guess)
+#  => Rate.new(2.507136, :apr)
+```
+
 
 ## ABOUT
 
