@@ -37,7 +37,7 @@ describe "Cashflows" do
       @transactions << Transaction.new(390000, date: Time.new(2013,1,1))
     end
 
-    it "should fail to calculate on with default guess (1.0)" do
+    it "should fail to calculate with default guess (1.0)" do
       assert_equal D('-9999999999998.948'), @transactions.xirr.apr
     end
 
