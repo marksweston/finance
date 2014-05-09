@@ -131,7 +131,7 @@ module Finance
         raise ArgumentError, "Invalid Guess. Use a [Numeric] value." unless guess.is_a? Numeric
         guess
       end
-      return Flt::DecNum.new(result.to_s)
+      return result.to_f
     end
   end
 end
