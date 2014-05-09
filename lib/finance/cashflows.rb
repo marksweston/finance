@@ -70,10 +70,10 @@ module Finance
     # @see http://en.wikipedia.org/wiki/Net_present_value
     # @api public
     def npv(rate)
-      self.collect! { |entry| Flt::DecNum.new(entry.to_s) }
+      cashflow = self.collect { |entry| Flt::DecNum.new(entry.to_s) }
 
       rate, total = Flt::DecNum.new(rate.to_s), Flt::DecNum.new(0.to_s)
-      self.each_with_index do |cashflow, index|
+      cashflow.each_with_index do |cashflow, index|
         total += cashflow / (1 + rate) ** index
       end
 
