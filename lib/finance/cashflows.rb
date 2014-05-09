@@ -39,12 +39,12 @@ module Finance
 
     # calculate the internal rate of return for a sequence of cash flows
     # @return [DecNum] the internal rate of return
-    # @param [Numeric] Initial guess rate
+    # @param [Numeric] Initial guess rate, Defaults to 1.0
     # @example
     #   [-4000,1200,1410,1875,1050].irr #=> 0.143
     # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
     # @api public
-    def irr(guess=nil)
+    def irr(guess=1.0)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |i| i >= 0 }
       if positives.empty? || negatives.empty?
@@ -52,7 +52,7 @@ module Finance
       end
 
       func = Function.new(self, :npv)
-      rate = guess.nil? ? [ func.one ] : [ guess.to_f ]
+      rate = [ Flt::DecNum.new(guess.to_s) ] if guess.is_a? Numeric
       nlsolve( func, rate )
       rate[0]
     end
@@ -81,7 +81,7 @@ module Finance
     end
 
     # calculate the internal rate of return for a sequence of cash flows with dates
-    # @param[Numeric] Initial guess rate
+    # @param[Numeric] Initial guess rate, Deafults to 1.0
     # @return [Rate] the internal rate of return
     # @example
     #   @transactions = []
@@ -90,7 +90,7 @@ module Finance
     #   @transactions << Transaction.new(  600, :date => Time.new(1995,01,01))
     #   @transactions.xirr(0.6) #=> Rate("0.024851", :apr, :compounds => :annually)
     # @api public
-    def xirr(guess=nil)
+    def xirr(guess=1.0)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |t| t.amount >= 0 }
       if positives.empty? || negatives.empty?
@@ -98,7 +98,7 @@ module Finance
       end
 
       func = Function.new(self, :xnpv)
-      rate = guess.nil? ? [ func.one ] : [ guess.to_f ]
+      rate = [ Flt::DecNum.new(guess.to_s) ] if guess.is_a? Numeric
       nlsolve( func, rate )
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
