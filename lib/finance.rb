@@ -1,3 +1,4 @@
+require 'active_support/configurable'
 require 'finance/decimal'
 require 'finance/cashflows'
 
