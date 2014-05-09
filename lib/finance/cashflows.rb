@@ -13,7 +13,7 @@ module Finance
     # @api private
     class Function
       values = {
-        eps: "1.0e-16",
+        eps: Finance.config.eps,
         one: "1.0",
         two: "2.0",
         ten: "10.0",
@@ -44,7 +44,7 @@ module Finance
     #   [-4000,1200,1410,1875,1050].irr #=> 0.143
     # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
     # @api public
-    def irr(guess=1.0)
+    def irr(guess=nil)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |i| i >= 0 }
       if positives.empty? || negatives.empty?
@@ -52,7 +52,7 @@ module Finance
       end
 
       func = Function.new(self, :npv)
-      rate = [ Flt::DecNum.new(guess.to_s) ] if guess.is_a? Numeric
+      rate = [ valid(guess) ]
       nlsolve( func, rate )
       rate[0]
     end
@@ -90,7 +90,7 @@ module Finance
     #   @transactions << Transaction.new(  600, :date => Time.new(1995,01,01))
     #   @transactions.xirr(0.6) #=> Rate("0.024851", :apr, :compounds => :annually)
     # @api public
-    def xirr(guess=1.0)
+    def xirr(guess=nil)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |t| t.amount >= 0 }
       if positives.empty? || negatives.empty?
@@ -98,7 +98,7 @@ module Finance
       end
 
       func = Function.new(self, :xnpv)
-      rate = [ Flt::DecNum.new(guess.to_s) ] if guess.is_a? Numeric
+      rate = [ valid(guess) ]
       nlsolve( func, rate )
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
@@ -120,6 +120,18 @@ module Finance
         n = t.amount / ( (1 + rate) ** ((t.date-start) / Flt::DecNum.new(31536000.to_s))) # 365 * 86400
         sum + n
       end
+    end
+    
+    private
+    def valid(guess)
+      result = if guess.nil?
+        raise ArgumentError, "Invalid Guess. Default guess should be a [Numeric] value." unless Finance.config.guess.is_a? Numeric
+        Finance.config.guess
+      else
+        raise ArgumentError, "Invalid Guess. Use a [Numeric] value." unless guess.is_a? Numeric
+        guess
+      end
+      return Flt::DecNum.new(result.to_s)
     end
   end
 end
