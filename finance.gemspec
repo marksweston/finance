@@ -13,8 +13,8 @@ SPEC = Gem::Specification.new do |s|
 
   s.required_ruby_version = '>=1.9'
   s.add_dependency 'flt', '>=1.3.0'
+  s.add_dependency 'activesupport', '>= 4.0.0'
   s.add_development_dependency 'minitest', '>= 4.7.5'
-  s.add_development_dependency 'activesupport', '>= 4.0.0'
   s.files = FileList['README.md', 'COPYING', 'COPYING.LESSER', 'HISTORY', 'lib/**/*.rb', 'test/**/*.rb'].to_a
 
   s.has_rdoc = true

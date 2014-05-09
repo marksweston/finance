@@ -29,4 +29,26 @@ describe "Cashflows" do
       assert_equal D("-937.41"), @xactions.xnpv(0.6).round(2)
     end
   end
+
+  describe "guess " do
+    before(:all) do
+      @transactions = []
+      @transactions << Transaction.new(-1000, date: Time.new(1957,1,1))
+      @transactions << Transaction.new(390000, date: Time.new(2013,1,1))
+    end
+
+    it "should fail to calculate on with default guess (1.0)" do
+      assert_equal D('-9999999999998.948'), @transactions.xirr.apr
+    end
+
+    it 'should calculate correct rate with new guess (0.1)' do
+      assert_equal D('0.112340'), @transactions.xirr(0.1).apr.round(6)
+    end
+
+    it 'should not allow non-numeric guesses' do
+      assert_raises(ArgumentError) { @transactions.xirr("error")}
+    end
+
+  end
+
 end

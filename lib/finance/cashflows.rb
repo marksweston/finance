@@ -48,7 +48,7 @@ module Finance
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |i| i >= 0 }
       if positives.empty? || negatives.empty?
-        raise ArgumentError, "Calculation does not converge."
+        raise ArgumentError, "Calculation does not converge. Cashflow needs to have a least one positive and one negative values."
       end
 
       func = Function.new(self, :npv)
@@ -121,7 +121,7 @@ module Finance
         sum + n
       end
     end
-    
+
     private
     def valid(guess)
       result = if guess.nil?
