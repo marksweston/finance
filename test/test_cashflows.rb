@@ -3,7 +3,7 @@ require_relative 'test_helper'
 describe "Cashflows" do
   describe "an array of numeric cashflows" do
     it "should have an Internal Rate of Return" do
-      assert_equal D("0.143"), [-4000,1200,1410,1875,1050].irr.round(3)
+      assert_equal "0.143".to_f.round(3), [-4000,1200,1410,1875,1050].irr.to_f.round(3)
       assert_raises(ArgumentError) { [10,20,30].irr }
     end
 
@@ -42,7 +42,7 @@ describe "Cashflows" do
     end
 
     it 'should calculate correct rate with new guess (0.1)' do
-      assert_equal '0.112340'.to_f, @transactions.xirr(0.1).apr.round(6).to_f
+      assert_equal '0.11234'.to_f, @transactions.xirr(0.1).apr.round(5).to_f
     end
 
     it 'should not allow non-numeric guesses' do
