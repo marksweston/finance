@@ -33,7 +33,17 @@ module Finance
 
       def values(x)
         value = @transactions.send(@function, Flt::DecNum.new(x[0].to_s))
-        [ BigDecimal.new(value.to_s) ]
+
+        # Due to the fact that somewhere along the way we are taking negative
+        # values to a fractional power, +value+ ends up being a +Complex+ number.
+        # When you do +value.to_s+ of a +Complex+ number has a form "12.34+56.78i"
+        # and when you take +BigDecimal.new()+ of that, the imaginary part is completely
+        # ignored, guiding the Newtonian into entirely wrong direction (see Issue #38).
+        # So we have to do some dancing around to ensure it doesn't get ignored.
+        value_direction = (value.real <=>0)
+        value_direction = (value.imaginary <=> 0) if value_direction == 0
+
+        [ BigDecimal.new((value.magnitude * value_direction).to_s) ]
       end
     end
 

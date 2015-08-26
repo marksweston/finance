@@ -71,7 +71,8 @@ module Finance
 
     # @api public
     def inspect
-      "Transaction(#{@amount})"
+      dt = date.strftime(' <%F>') if date
+      "Transaction(#{@amount}#{dt})"
     end
 
     # Modify a Transaction's amount by passing a block
