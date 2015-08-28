@@ -36,10 +36,11 @@ module Finance
 
         # Due to the fact that somewhere along the way we are taking negative
         # values to a fractional power, +value+ ends up being a +Complex+ number.
-        # When you do +value.to_s+ of a +Complex+ number has a form "12.34+56.78i"
+        # String representation (+value.to_s+) of a +Complex+ number looks like "12.34+56.78i",
         # and when you take +BigDecimal.new()+ of that, the imaginary part is completely
         # ignored, guiding the Newtonian into entirely wrong direction (see Issue #38).
-        # So we have to do some dancing around to ensure it doesn't get ignored.
+        # Instead, we should get the magnitude of complex number and ensure it points
+        # the vector points in the right direction, too.
         value_direction = (value.real <=>0)
         value_direction = (value.imaginary <=> 0) if value_direction == 0
 
