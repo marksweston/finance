@@ -2,19 +2,6 @@
 
 a library for financial modelling in Ruby.
 
-## Announcement
-
-I'm looking for someone interested in taking over as the maintainer of the
-`finance` package.  Send me a message on GitHub if you are interested.
-
-As much as I would like to continue to develop and maintain this code, the
-fact of the matter is that I no longer have the time to do so.  There are 
-several pull requests and good suggestions that have been left by the wayside
-due to my inaction, and I don't think that is right.
-
-I originally wrote this code for a personal project, and I've always been 
-flattered that the Ruby community has found it to be useful.  Thanks!
-
 ## INSTALL
 
     $ sudo gem install finance
