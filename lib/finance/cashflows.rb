@@ -13,7 +13,7 @@ module Finance
     # @api private
     class Function
       values = {
-        eps: "1.0e-16",
+        eps: Finance.config.eps,
         one: "1.0",
         two: "2.0",
         ten: "10.0",
@@ -39,19 +39,20 @@ module Finance
 
     # calculate the internal rate of return for a sequence of cash flows
     # @return [DecNum] the internal rate of return
+    # @param [Numeric] Initial guess rate, Defaults to 1.0
     # @example
     #   [-4000,1200,1410,1875,1050].irr #=> 0.143
     # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
     # @api public
-    def irr
+    def irr(guess=nil)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |i| i >= 0 }
       if positives.empty? || negatives.empty?
-        raise ArgumentError, "Calculation does not converge."
+        raise ArgumentError, "Calculation does not converge. Cashflow needs to have a least one positive and one negative values."
       end
 
       func = Function.new(self, :npv)
-      rate = [ func.one ]
+      rate = [ valid(guess) ]
       nlsolve( func, rate )
       rate[0]
     end
@@ -69,10 +70,10 @@ module Finance
     # @see http://en.wikipedia.org/wiki/Net_present_value
     # @api public
     def npv(rate)
-      self.collect! { |entry| Flt::DecNum.new(entry.to_s) }
+      cashflow = self.collect { |entry| Flt::DecNum.new(entry.to_s) }
 
       rate, total = Flt::DecNum.new(rate.to_s), Flt::DecNum.new(0.to_s)
-      self.each_with_index do |cashflow, index|
+      cashflow.each_with_index do |cashflow, index|
         total += cashflow / (1 + rate) ** index
       end
 
@@ -80,6 +81,7 @@ module Finance
     end
 
     # calculate the internal rate of return for a sequence of cash flows with dates
+    # @param[Numeric] Initial guess rate, Deafults to 1.0
     # @return [Rate] the internal rate of return
     # @example
     #   @transactions = []
@@ -88,7 +90,7 @@ module Finance
     #   @transactions << Transaction.new(  600, :date => Time.new(1995,01,01))
     #   @transactions.xirr(0.6) #=> Rate("0.024851", :apr, :compounds => :annually)
     # @api public
-    def xirr(iterations=100)
+    def xirr(guess=nil)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |t| t.amount >= 0 }
       if positives.empty? || negatives.empty?
@@ -96,7 +98,7 @@ module Finance
       end
 
       func = Function.new(self, :xnpv)
-      rate = [ func.one ]
+      rate = [ valid(guess) ]
       nlsolve( func, rate )
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
@@ -118,6 +120,18 @@ module Finance
         n = t.amount / ( (1 + rate) ** ((t.date-start) / Flt::DecNum.new(31536000.to_s))) # 365 * 86400
         sum + n
       end
+    end
+
+    private
+    def valid(guess)
+      result = if guess.nil?
+        raise ArgumentError, "Invalid Guess. Default guess should be a [Numeric] value." unless Finance.config.guess.is_a? Numeric
+        Finance.config.guess
+      else
+        raise ArgumentError, "Invalid Guess. Use a [Numeric] value." unless guess.is_a? Numeric
+        guess
+      end
+      return result.to_f
     end
   end
 end

@@ -1,3 +1,10 @@
+= Version 2.0.1
+9 May 2014
+
+* Added Support for configuration file to set up default eps and guess for IRR & XIRR
+* Added guess rate for IRR & XIRR
+* NVP now does not change the given cashflow array
+
 = Version 2.0.0
 23 Jul 2013
 
@@ -19,11 +26,11 @@
 * Bugfix: Array#sum no longer collides with the Array#sum defined in Rails.
 * Bugfix: Numeric#amortize now correctly calls Finance::Amortization#new.
 
-= Version 1.0.0 
+= Version 1.0.0
 20 Jul 2011
 
 * Moved to Ruby 1.9.
-* All classes are now contained within the +Finance+ namespace.  
+* All classes are now contained within the +Finance+ namespace.
 * LOTS of additional documentation and examples.
 * Introduced _shoulda_ for unit tests, to make things a little more readable.
 * Bugfix: The +amortize+ Numeric method now accepts a variable number of rates.
