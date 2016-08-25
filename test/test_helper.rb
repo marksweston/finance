@@ -3,6 +3,8 @@ require 'minitest/spec'
 
 require 'active_support/all'
 
+require 'pry'
+
 require 'flt'
 require 'flt/d'
 

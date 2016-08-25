@@ -172,7 +172,12 @@ module Finance
     # @see http://en.wikipedia.org/wiki/Amortization_calculator
     # @api public
     def Amortization.payment(principal, rate, periods)
-      -(principal * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
+      if rate.zero?
+        # simplified formula to avoid division-by-zero when interest rate is zero
+        return -(principal / periods).round(2)
+      else
+        return -(principal * (rate + (rate / ((1 + rate) ** periods - 1)))).round(2)
+      end
     end
 
     # @return [Array] the amount of the payment in each period
