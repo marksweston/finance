@@ -9,7 +9,7 @@ require 'finance/cashflows'
 #  * *principal* represents the outstanding balance of a loan or annuity.
 #  * *rate* represents the interest rate _per period_.
 module Finance
-  autoload :Amortization, 'finance/amortization'
-  autoload :Rate,         'finance/rates'
-  autoload :Transaction,  'finance/transaction'
+  require 'finance/amortization'
+  require 'finance/rates'
+  require 'finance/transaction'
 end
