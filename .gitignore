@@ -5,3 +5,4 @@ coverage/
 Gemfile.lock
 *.swp
 .bundle
+.idea
