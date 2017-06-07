@@ -7,6 +7,13 @@ describe "Amortization" do
     -(-rate*principal*(1+rate)**(period-1) - payment*((1+rate)**(period-1)-1)).round(2)
   end
 
+  describe "amortization with a 0% rate" do
+    it "should not raise a divide-by-zero error" do
+      rate = Rate.new(0, :apr, :duration => 30 * 12)
+      Amortization.new(D(10000), rate) # should not raise an error
+    end
+  end
+
   describe "a fixed-rate amortization of 200000 at 3.75% over 30 years" do
     before(:all) do
       @rate = Rate.new(0.0375, :apr, :duration => (30 * 12))

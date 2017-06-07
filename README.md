@@ -2,19 +2,6 @@
 
 a library for financial modelling in Ruby.
 
-## Announcement
-
-I'm looking for someone interested in taking over as the maintainer of the
-`finance` package.  Send me a message on GitHub if you are interested.
-
-As much as I would like to continue to develop and maintain this code, the
-fact of the matter is that I no longer have the time to do so.  There are 
-several pull requests and good suggestions that have been left by the wayside
-due to my inaction, and I don't think that is right.
-
-I originally wrote this code for a personal project, and I've always been 
-flattered that the Ruby community has found it to be useful.  Thanks!
-
 ## INSTALL
 
     $ sudo gem install finance
@@ -166,14 +153,14 @@ Copyright (c) 2011, William Kranec.
 All rights reserved.
 
 This program is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
+under the terms of the GNU Lesser General Public License as published by the
 Free Software Foundation, either version 3 of the License, or (at your
 option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License along
+You should have received a copy of the GNU Lesser General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
