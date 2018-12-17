@@ -22,7 +22,7 @@ module Finance
 
       values.each do |key, value|
         define_method key do
-          BigDecimal.new value
+          Kernel.BigDecimal(value)
         end
       end
 
@@ -44,7 +44,7 @@ module Finance
         value_direction = (value.real <=>0)
         value_direction = (value.imaginary <=> 0) if value_direction == 0
 
-        [ BigDecimal.new((value.magnitude * value_direction).to_s) ]
+        [ Kernel.BigDecimal((value.magnitude * value_direction).to_s) ]
       end
     end
 
