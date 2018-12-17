@@ -22,7 +22,7 @@ module Finance
 
       values.each do |key, value|
         define_method key do
-          BigDecimal.new value
+          Kernel.BigDecimal(value)
         end
       end
 
@@ -33,7 +33,18 @@ module Finance
 
       def values(x)
         value = @transactions.send(@function, Flt::DecNum.new(x[0].to_s))
-        [ BigDecimal.new(value.to_s) ]
+
+        # Due to the fact that somewhere along the way we are taking negative
+        # values to a fractional power, +value+ ends up being a +Complex+ number.
+        # String representation (+value.to_s+) of a +Complex+ number looks like "12.34+56.78i",
+        # and when you take +BigDecimal.new()+ of that, the imaginary part is completely
+        # ignored, guiding the Newtonian into entirely wrong direction (see Issue #38).
+        # Instead, we should get the magnitude of complex number and ensure it points
+        # the vector points in the right direction, too.
+        value_direction = (value.real <=>0)
+        value_direction = (value.imaginary <=> 0) if value_direction == 0
+
+        [ Kernel.BigDecimal((value.magnitude * value_direction).to_s) ]
       end
     end
 

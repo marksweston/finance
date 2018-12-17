@@ -15,7 +15,4 @@ SPEC = Gem::Specification.new do |s|
   s.add_development_dependency 'activesupport', '>= 4.0.0'
   s.add_development_dependency 'pry'
   s.files = `git ls-files`.split("\n")
-
-  s.has_rdoc = true
-  s.extra_rdoc_files = ['README.md', 'COPYING', 'COPYING.LESSER', 'HISTORY']
 end
