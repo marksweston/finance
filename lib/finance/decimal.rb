@@ -7,7 +7,7 @@ DecNum.context.define_conversion_from(BigDecimal) do |x, context|
 end
 
 DecNum.context.define_conversion_to(BigDecimal) do |x|
-  BigDecimal.new(x.to_s)
+  BigDecimal(x.to_s)
 end
 
 class Numeric
