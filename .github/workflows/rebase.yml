@@ -1,0 +1,12 @@
+on: pull_request
+name: Changelog Reminder
+jobs:
+  remind:
+    name: Changelog Reminder
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Changelog Reminder
+      uses: peterjgrainger/action-changelog-reminder@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
