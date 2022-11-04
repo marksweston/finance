@@ -22,7 +22,7 @@ module Finance
 
       values.each do |key, value|
         define_method key do
-          BigDecimal.new value
+          BigDecimal(value)
         end
       end
 
@@ -33,7 +33,10 @@ module Finance
 
       def values(x)
         value = @transactions.send(@function, Flt::DecNum.new(x[0].to_s))
-        [ BigDecimal.new(value.to_s) ]
+        value_direction = (value.real <=>0)
+        value_direction = (value.imaginary <=> 0) if value_direction == 0
+
+        [ Kernel.BigDecimal((value.magnitude * value_direction).to_s) ]
       end
     end
 
